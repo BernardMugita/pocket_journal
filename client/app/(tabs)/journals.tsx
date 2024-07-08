@@ -10,10 +10,17 @@ import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "@/constants";
 import { styled } from "nativewind";
+import { Link, useNavigation } from "expo-router";
+import { NavigationProp } from "@react-navigation/native";
 import FormField from "@/components/form_field";
 import JournalItem from "../../components/journal_item";
 
 type Props = {};
+
+type RootStackParamList = {
+  sing_up: undefined;
+  single_journal: undefined;
+};
 
 const JournalsBackground = styled(ImageBackground);
 const IntroBanner = styled(ImageBackground);
@@ -23,6 +30,12 @@ const Journals = (props: Props) => {
   const [search, setSearch] = useState({
     searchQuery: "",
   });
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const handlePress = () => {
+    navigation.navigate("single_journal");
+  };
 
   return (
     <SafeAreaView className="bg-[#ffe3d8] h-full">
@@ -66,9 +79,9 @@ const Journals = (props: Props) => {
               Your journals
             </Text>
             <View className="flex-col">
-              <JournalItem />
-              <JournalItem />
-              <JournalItem />
+              <JournalItem onPress={handlePress} />
+              <JournalItem onPress={handlePress} />
+              <JournalItem onPress={handlePress} />
             </View>
           </View>
         </JournalsBackground>

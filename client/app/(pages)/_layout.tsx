@@ -1,4 +1,3 @@
-import { View, Text } from "react-native";
 import React from "react";
 import { Redirect, Stack } from "expo-router";
 import { useAuth } from "../context/AuthContext";
@@ -18,9 +17,21 @@ const PagesLayout = (props: Props) => {
         <Stack.Screen
           name="single_journal"
           options={{
-            headerShown: false,
+            headerShown: true,
+            title: "",
+            headerStyle: {
+              backgroundColor: "#ffe3d8",
+            },
+            headerTintColor: "#450a0a",
+            headerTitleStyle: {
+              fontWeight: "bold",
+              fontFamily: "Poppins-Regular",
+              color: "#450a0a",
+            },
+            headerTitleAlign: "left",
           }}
         />
+
         <Stack.Screen
           name="edit_journal"
           options={{

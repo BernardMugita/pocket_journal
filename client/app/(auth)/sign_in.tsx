@@ -5,19 +5,12 @@ import { images } from "../../constants";
 import FormField from "../../components/form_field";
 import { useState } from "react";
 import CustomButton from "../../components/custom_button";
-import { Link, router, useNavigation } from "expo-router";
+import { Link, router } from "expo-router";
 import SuccessWidget from "@/components/success_widget";
 import ErrorWidget from "@/components/error_widget";
-import axios from "axios";
-import { NavigationProp } from "@react-navigation/native";
 import { useAuth } from "../context/AuthContext";
 
 type Props = {};
-
-type RootStackParamList = {
-  sing_up: undefined;
-  homepage: undefined;
-};
 
 const SignIn = (props: Props) => {
   const [form, setForm] = useState({
@@ -29,7 +22,6 @@ const SignIn = (props: Props) => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const [message, setMessage] = useState(false);
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const { onLogin } = useAuth();
 
