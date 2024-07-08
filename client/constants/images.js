@@ -7,6 +7,11 @@ import logowhite from "../assets/images/pjlogo-white.png";
 import logoSmall from "../assets/images/logo-small.png";
 import empty from "../assets/images/empty.png";
 import welcome from "../assets/images/welcome.png";
+import placeholder from "../assets/images/placeholder.jpg";
+import bg from "../assets/images/bg2.png";
+import day from "../assets/images/day.jpg";
+import night from "../assets/images/night.jpg";
+import calendar from "../assets/icons/calendar.png";
 
 export default {
   profile,
@@ -18,4 +23,9 @@ export default {
   logoSmall,
   empty,
   welcome,
+  placeholder,
+  bg,
+  day,
+  night,
+  calendar
 };

@@ -10,6 +10,7 @@ type Props = {
   handleChangeText: (e: string) => void;
   otherStyles: string;
   keyboardType: string;
+  inputStyles: string;
 };
 
 const FormField: React.FC<Props> = ({
@@ -19,14 +20,15 @@ const FormField: React.FC<Props> = ({
   handleChangeText,
   otherStyles,
   keyboardType,
+  inputStyles,
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   return (
     <View className={`${otherStyles} w-full`}>
-      <Text className="font-psemibold text-xl">{title}</Text>
+      <Text className="font-psemibold text-xl mb-2">{title}</Text>
 
-      <View className="w-full h-16 px-4 bg-gray-200 rounded-xl flex-row items-center">
+      <View className={`${inputStyles}`}>
         <TextInput
           className="flex-1 text-white font-psemibold w-full"
           value={value}
@@ -40,6 +42,16 @@ const FormField: React.FC<Props> = ({
           <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
             <Image
               source={!showPassword ? icons.eye : icons.eyeHide}
+              className="w-6 h-6 "
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
+
+        {title === "Search" && (
+          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+            <Image
+              source={icons.search}
               className="w-6 h-6 "
               resizeMode="contain"
             />

@@ -110,6 +110,7 @@ const SignUp: React.FC<Props> = () => {
             otherStyles="mt-7"
             placeholder=""
             keyboardType=""
+            inputStyles="w-full h-16 px-4 bg-gray-200 rounded-xl flex-row items-center"
           />
 
           <FormField
@@ -119,6 +120,7 @@ const SignUp: React.FC<Props> = () => {
             otherStyles="mt-7"
             placeholder=""
             keyboardType=""
+            inputStyles="w-full h-16 px-4 bg-gray-200 rounded-xl flex-row items-center"
           />
 
           <FormField
@@ -128,6 +130,7 @@ const SignUp: React.FC<Props> = () => {
             placeholder=""
             otherStyles="mt-7"
             keyboardType="password"
+            inputStyles="w-full h-16 px-4 bg-gray-200 rounded-xl flex-row items-center"
           />
 
           <CustomButton
