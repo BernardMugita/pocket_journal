@@ -2,8 +2,14 @@ import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 
+const jwtDecode = require("jwt-decode");
+
 interface AuthProps {
-  authState?: { token: string | null; isAuthenticated: boolean | null };
+  authState?: {
+    token: string | null;
+    isAuthenticated: boolean | null;
+    isExpired: boolean | null;
+  };
   onRegister?: (
     fullname: string,
     username: string,
@@ -11,6 +17,10 @@ interface AuthProps {
   ) => Promise<any>;
   onLogin?: (username: string, password: string) => Promise<any>;
   onLogout?: () => Promise<any>;
+}
+
+interface DecodedToken {
+  exp: number;
 }
 
 const TOKEN_KEY = "token";
@@ -26,10 +36,22 @@ export const AuthProvider = ({ children }: any) => {
   const [authState, setAuthState] = useState<{
     token: string | null;
     isAuthenticated: boolean | null;
+    isExpired: boolean | null;
   }>({
     token: null,
     isAuthenticated: null,
+    isExpired: null,
   });
+
+  const isTokenExpired = (token: string): boolean => {
+    try {
+      const decoded: DecodedToken = jwtDecode(token);
+      const currentTime = Date.now() / 1000;
+      return decoded.exp < currentTime;
+    } catch (error) {
+      return true;
+    }
+  };
 
   useEffect(() => {
     const loadToken = async () => {
@@ -41,6 +63,7 @@ export const AuthProvider = ({ children }: any) => {
         setAuthState({
           token: token,
           isAuthenticated: true,
+          isExpired: isTokenExpired(token),
         });
       }
     };
@@ -75,6 +98,7 @@ export const AuthProvider = ({ children }: any) => {
         setAuthState({
           token: responseData.token,
           isAuthenticated: true,
+          isExpired: isTokenExpired(responseData.token),
         });
 
         axios.defaults.headers.common[
@@ -98,15 +122,15 @@ export const AuthProvider = ({ children }: any) => {
     setAuthState({
       token: null,
       isAuthenticated: false,
+      isExpired: null,
     });
   };
 
   const value = {
-    onReister: RegisterUser,
+    onRegister: RegisterUser,
     onLogin: SignInUser,
     onLogout: LogoutUser,
     authState,
-    useAuth,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

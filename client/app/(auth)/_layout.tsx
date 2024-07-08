@@ -8,7 +8,8 @@ type Props = {};
 const AuthLayout = (props: Props) => {
   const { authState } = useAuth();
 
-  if (authState?.isAuthenticated) return <Redirect href="/homepage"/>
+  if (authState?.isAuthenticated && authState?.isExpired === false)
+    return <Redirect href="/homepage" />;
 
   return (
     <>
