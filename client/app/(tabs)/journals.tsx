@@ -14,12 +14,13 @@ import { Link, useNavigation } from "expo-router";
 import { NavigationProp } from "@react-navigation/native";
 import FormField from "@/components/form_field";
 import JournalItem from "../../components/journal_item";
+import FloatingButton from "../../components/floating_button";
 
 type Props = {};
 
 type RootStackParamList = {
   sing_up: undefined;
-  single_journal: undefined;
+  edit_journal: undefined;
 };
 
 const JournalsBackground = styled(ImageBackground);
@@ -34,14 +35,14 @@ const Journals = (props: Props) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handlePress = () => {
-    navigation.navigate("single_journal");
+    navigation.navigate("edit_journal");
   };
 
   return (
     <SafeAreaView className="bg-[#ffe3d8] h-full">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
         <JournalsBackground
-          className="flex-1 items-center justify-start opacity-250"
+          className="flex-1 items-center justify-start opacity-250 relative"
           source={images.bg}
           resizeMode="contain"
           imageStyle={styles.image}
@@ -84,6 +85,7 @@ const Journals = (props: Props) => {
               <JournalItem onPress={handlePress} />
             </View>
           </View>
+          <FloatingButton handlePress={handlePress} />
         </JournalsBackground>
       </ScrollView>
     </SafeAreaView>

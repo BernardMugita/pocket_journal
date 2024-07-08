@@ -3,6 +3,7 @@ import React from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "@/constants";
 import { Ionicons } from "@expo/vector-icons";
+import { Link } from "expo-router";
 
 type Props = {};
 
@@ -15,9 +16,12 @@ const SingleJournal = (props: Props) => {
     >
       <View className="flex-row gap-2 justify-end mb-4">
         <TouchableOpacity className="bg-[#0088006b] p-3 rounded-xl flex-row items-center">
-          <Text className="text-base font-pregular text-[#008000] mr-2">
+          <Link
+            href={"edit_journal"}
+            className="text-base font-pregular text-[#008000] mr-2"
+          >
             Edit
-          </Text>
+          </Link>
           <Ionicons name="pencil-outline" />
         </TouchableOpacity>
         <TouchableOpacity className="bg-[#ff00006b] p-3 rounded-xl flex-row items-center">
