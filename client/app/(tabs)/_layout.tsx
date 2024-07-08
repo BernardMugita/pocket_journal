@@ -44,11 +44,11 @@ const TabLayout = (props: Props) => {
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
-        tabBarActiveTintColor: "#96bfff",
+        tabBarActiveTintColor: "#ffffff",
         tabBarStyle: {
-          backgroundColor: "#161622",
+          backgroundColor: "#450a0a",
           borderTopWidth: 1,
-          borderTopColor: "#96bfff",
+          borderTopColor: "#450a0a",
           height: 50,
         },
       }}
