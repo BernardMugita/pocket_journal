@@ -5,13 +5,14 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import { Link } from "expo-router";
 
 type Props = {
-  handlePress: () => void;
+  route: string;
+  name: string
 };
 
-const FloatingButton: React.FC<Props> = ({ handlePress }) => {
+const FloatingButton: React.FC<Props> = ({ route, name }) => {
   return (
     <View className="absolute items-center flex-col bottom-2 right-2">
-      <Link href={'write_journal'} className="bg-[#450a0a] rounded-full">
+      <Link href={`${route}`} className="bg-[#450a0a] rounded-full">
         <Ionicons
           name="pencil-outline"
           size={60}
@@ -19,7 +20,7 @@ const FloatingButton: React.FC<Props> = ({ handlePress }) => {
           className=""
         />
       </Link>
-      <Text className="font-pbold text-white text-base">Write</Text>
+      <Text className="font-pbold text-white text-base">{name}</Text>
     </View>
   );
 };

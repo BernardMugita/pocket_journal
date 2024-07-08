@@ -9,6 +9,9 @@ import React from "react";
 import { Tabs } from "expo-router";
 
 import { icons } from "../../constants";
+import { Ionicons } from "@expo/vector-icons";
+import { TouchableOpacity } from 'react-native';
+import { useAuth } from "../context/AuthContext";
 
 type Props = {};
 
@@ -20,6 +23,7 @@ interface TabIconProps {
 }
 
 const TabIcon: React.FC<TabIconProps> = ({ icon, color, name, focused }) => {
+
   return (
     <View className="items-center justify-center gap-2">
       <Image
@@ -39,6 +43,8 @@ const TabIcon: React.FC<TabIconProps> = ({ icon, color, name, focused }) => {
 };
 
 const TabLayout = (props: Props) => {
+  const {onLogout} = useAuth()
+
   return (
     <Tabs
       screenOptions={{
@@ -56,7 +62,18 @@ const TabLayout = (props: Props) => {
       <Tabs.Screen
         name="homepage"
         options={{
-          title: "Home",
+          title: "",
+          headerShown: true,
+            headerStyle: {
+              backgroundColor: "#ffe3d8",
+            },
+            headerRight: () => (
+              <View className="px-4">
+                <TouchableOpacity onPress={onLogout}>
+                <Ionicons name="log-out-outline" size={30} color={'#450a0a'}/>
+                </TouchableOpacity>
+              </View>
+            ),
           tabBarIcon: ({ color, focused }) => (
             <TabIcon
               icon={icons.home}
@@ -68,7 +85,7 @@ const TabLayout = (props: Props) => {
         }}
       />
       <Tabs.Screen
-        name="journals"
+        name="categories"
         options={{
           title: "Journals",
           tabBarIcon: ({ color, focused }) => (

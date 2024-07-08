@@ -32,8 +32,8 @@ export default function RootLayout() {
   }
 
   return (
-    <GestureHandlerRootView>
-      <AuthProvider>
+    <AuthProvider>
+      <GestureHandlerRootView>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="index" options={{ headerShown: false }} />
@@ -41,7 +41,7 @@ export default function RootLayout() {
           <Stack.Screen name="(pages)" options={{ headerShown: false }} />
           <Stack.Screen name="+not-found" />
         </Stack>
-      </AuthProvider>
-    </GestureHandlerRootView>
+      </GestureHandlerRootView>
+    </AuthProvider>
   );
 }

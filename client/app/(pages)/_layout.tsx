@@ -7,8 +7,6 @@ type Props = {};
 const PagesLayout = (props: Props) => {
   const { authState } = useAuth();
 
-  console.log(authState?.isExpired);
-
   if (!authState?.isAuthenticated) return <Redirect href="/sign_in" />;
   const today = new Date(Date.now());
 
@@ -77,7 +75,18 @@ const PagesLayout = (props: Props) => {
         <Stack.Screen
           name="categories"
           options={{
-            headerShown: false,
+            headerShown: true,
+            title: "",
+            headerStyle: {
+              backgroundColor: "#ffe3d8",
+            },
+            headerTintColor: "#450a0a",
+            headerTitleStyle: {
+              fontWeight: "bold",
+              fontFamily: "Poppins-Regular",
+              color: "#450a0a",
+            },
+            headerTitleAlign: "left",
           }}
         />
       </Stack>

@@ -85,7 +85,7 @@ const Journals = (props: Props) => {
               <JournalItem onPress={handlePress} />
             </View>
           </View>
-          <FloatingButton handlePress={handlePress} />
+          <FloatingButton route="/write_journal" name="Write"/>
         </JournalsBackground>
       </ScrollView>
     </SafeAreaView>

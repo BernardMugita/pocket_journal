@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import axios from "axios";
 import * as SecureStore from "expo-secure-store";
+import { router } from "expo-router";
 
 const jwtDecode = require("jwt-decode");
 
@@ -124,6 +125,10 @@ export const AuthProvider = ({ children }: any) => {
       isAuthenticated: false,
       isExpired: null,
     });
+
+    setTimeout(() => {
+      router.navigate('sign_in')
+    }, 2000)
   };
 
   const value = {

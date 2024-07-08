@@ -20,15 +20,15 @@ const HomeBackground = styled(ImageBackground);
 
 const HomePage = (props: Props) => {
   return (
-    <SafeAreaView className="bg-[#ffe3d8] h-full">
-      <ScrollView contentContainerStyle={{ height: "100%" }}>
+    
+      <ScrollView className="bg-[#ffe3d8]" contentContainerStyle={{ height: "100%" }}>
         <HomeBackground
           className="flex-1 items-center justify-start m-2 h-full"
           source={images.bg}
           resizeMode="contain"
           imageStyle={styles.image}
         >
-          <View className="flex-row items-center h-[4rem] p-2 mt-10 border-b-red-200 border-b-2 mb-4">
+          <View className="flex-row items-center h-[4rem] p-2 border-b-red-200 border-b-2 mb-4">
             <Image
               className="w-[80px] h-[80px]"
               resizeMode="cover"
@@ -123,7 +123,7 @@ const HomePage = (props: Props) => {
           </View>
         </HomeBackground>
       </ScrollView>
-    </SafeAreaView>
+    
   );
 };
 
