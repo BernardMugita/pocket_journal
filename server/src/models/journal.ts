@@ -49,6 +49,7 @@ const journalModel = (sequelize: Sequelize) => {
       category: {
         type: DataTypes.STRING,
         allowNull: false,
+        defaultValue: "uncategorized"
       },
     },
     {

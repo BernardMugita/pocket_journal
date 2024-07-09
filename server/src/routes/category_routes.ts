@@ -36,6 +36,13 @@ router.post("/create_category", async (req: Request, res: Response) => {
     owner,
   };
 
+  if (!categoryName || !owner) {
+    return res.status(400).json({
+      status: "error",
+      message: "Fill in all the fields",
+    });
+  }
+
   try {
     const newCategory = await CategoryModel.create(category_details);
     return res.status(200).json({

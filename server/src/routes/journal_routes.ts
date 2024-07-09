@@ -40,6 +40,13 @@ router.post("/create_journal", async (req: Request, res: Response) => {
     category,
   };
 
+  if (!title || !content || !category || !owner) {
+    return res.status(400).json({
+      status: "error",
+      message: "Fill in all the fields",
+    });
+  }
+
   try {
     const newJournal = await JournalModel.create(journal_details);
     return res.status(200).json({
@@ -168,6 +175,62 @@ router.post(
       return res.status(500).json({
         status: "error",
         message: error,
+      });
+    }
+  }
+);
+
+// Route to get journals by category name
+router.post(
+  "/get_journals_by_category",
+  authenticateToken,
+  async (req: AuthenticatedRequest, res: Response) => {
+    const { categoryName } = req.body; // Assuming you're passing categoryName in the request body
+    const userId = req.signUser?.userId;
+
+    try {
+      // Find the user making the request
+      const user = await UserModel.findOne({ where: { userId } });
+      if (!user) {
+        return res.status(404).json({
+          status: "error",
+          message: "User not found",
+        });
+      }
+
+      // Check if the user owns the category
+      const ownedCategory = await JournalModel.findOne({
+        where: { owner: user.username, category: categoryName },
+      });
+
+      if (!ownedCategory) {
+        return res.status(404).json({
+          status: "error",
+          message: "No categories found!",
+        });
+      }
+
+      // Fetch journals for the specified category
+      const journals = await JournalModel.findAll({
+        where: { category: categoryName },
+      });
+
+      if (!journals || journals.length === 0) {
+        return res.status(404).json({
+          status: "error",
+          message: "No journals found for the specified category",
+        });
+      }
+
+      return res.status(200).json({
+        status: "success",
+        journals: journals,
+      });
+    } catch (error) {
+      console.error("Error fetching journals:", error);
+      return res.status(500).json({
+        status: "error",
+        message: "Failed to fetch journals",
       });
     }
   }
