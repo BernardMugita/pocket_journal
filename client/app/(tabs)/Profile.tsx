@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Image,
   TouchableOpacity,
+  Alert,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { styled } from "nativewind";
@@ -14,7 +15,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { BASEURL, useAuth } from "../context/AuthContext";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import SuccessWidget from "@/components/success_widget";
+import ErrorWidget from "@/components/error_widget";
 
 type Props = {};
 const ProfileBackgorund = styled(ImageBackground);
@@ -45,8 +48,11 @@ type AccountScreenProps = NativeStackScreenProps<
 >;
 
 const Profile = ({ navigation }: AccountScreenProps) => {
-  const { authState } = useAuth();
+  const { authState, onLogout } = useAuth();
   const [user, setUser] = useState({});
+  const [success, setSuccess] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
   const getSignedInUser = async () => {
     const token = authState?.token;
     const baseUrl = BASEURL;
@@ -71,6 +77,40 @@ const Profile = ({ navigation }: AccountScreenProps) => {
     }
   };
 
+  const deleteAccount = async () => {
+    const token = authState?.token;
+    const baseUrl = BASEURL;
+
+    try {
+      const deleteAccountRequest = await axios.post(
+        `${baseUrl}/users/delete_user_account`,
+        {
+          userId: (user as User).userId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (deleteAccountRequest.status === 200) {
+        console.log(deleteAccountRequest.data);
+        setSuccess(true);
+        setTimeout(() => {
+          setSuccess(false);
+          onLogout;
+        }, 3000);
+      }
+    } catch (error) {
+      console.error(error as AxiosError);
+      setError(true);
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+    }
+  };
+
   useEffect(() => {
     getSignedInUser();
   }, []);
@@ -82,12 +122,29 @@ const Profile = ({ navigation }: AccountScreenProps) => {
     });
   };
 
+  const confirmDelete = () => {
+    Alert.alert("Warning", "Are you sure you want to delete your account?", [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      {
+        text: "Delete",
+        onPress: () => {
+          deleteAccount();
+        },
+      },
+    ]);
+  };
+
   return (
     <SafeAreaView className="bg-[#ffe3d8] flex-1 relative">
       <ScrollView
         className="bg-[#ffe3d8]"
         contentContainerStyle={{ height: "100%" }}
       >
+        {success && <SuccessWidget message="Account Deleted" />}
+        {error && <ErrorWidget message="Something went wrong!" />}
         <ProfileBackgorund
           className="flex-1 items-center justify-start m-2 h-full"
           source={images.bg}
@@ -105,7 +162,7 @@ const Profile = ({ navigation }: AccountScreenProps) => {
               <Ionicons name="pencil-outline" />
             </TouchableOpacity>
             <TouchableOpacity
-              // onPress={deleteJournal}
+              onPress={confirmDelete}
               className="bg-[#ff00006b] p-3 rounded-xl flex-row items-center"
             >
               <Text className="text-base font-pregular text-[#ff0000] mr-2">
@@ -135,7 +192,7 @@ const Profile = ({ navigation }: AccountScreenProps) => {
               <View className="flex-col items-center gap-1 flex-1">
                 <Text className="text-2xl font-pbold text-red-950">12</Text>
                 <Text className="text-base font-pregular text-white">
-                  Journals
+                  Accounts
                 </Text>
               </View>
             </View>
@@ -171,6 +228,9 @@ const styles = StyleSheet.create({
   },
   image: {
     opacity: 0.25,
+  },
+  text: {
+    fontFamily: "Poppins-Bold",
   },
 });
 

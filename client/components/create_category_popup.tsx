@@ -1,5 +1,5 @@
 import { View, Text } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import FormField from "./form_field";
 import CustomButton from "./custom_button";
 import { BASEURL, useAuth } from "@/app/context/AuthContext";
@@ -93,8 +93,12 @@ const CreateCategoryPopup: React.FC<Props> = ({ onClose }) => {
     }
   };
 
+  useEffect(() => {
+    getSignedInUser();
+  }, []);
+
   return (
-    <View className="w-full h-[100vh] bg-[#0000006b] absolute top-0 left-0 items-center justify-center">
+    <View className="w-full h-[800px] bg-[#0000006b] z-50 absolute top-0 left-0 items-center justify-center">
       {success ? (
         <SuccessWidget message="Journal Created Successfully" />
       ) : null}

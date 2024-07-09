@@ -27,6 +27,7 @@ type Props = {
 };
 
 interface CategoryResponse {
+  categoryId: string;
   categoryName: string;
   owner: string;
   createdAt: string;
@@ -49,7 +50,7 @@ const CategoriesBackground = styled(ImageBackground);
 
 const Categories = ({ navigation }: CategoryScreenProps) => {
   const { authState } = useAuth();
-  const [categories, setCategories] = useState([{}]);
+  const [categories, setCategories] = useState<CategoryResponse[]>([]);
   const [updatedAt, setUpdatedAt] = useState({
     filter: "",
     category: "",
@@ -76,7 +77,13 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
         }
       );
 
+      console.log(getCategoriesRequest.data);
+
       if (getCategoriesRequest.status === 200) {
+        // setCategories((prev) => [
+        //   ...prev,
+        //   getCategoriesRequest.data.categories,
+        // ]);
         setCategories(getCategoriesRequest.data.categories);
       }
       if (getCategoriesRequest.status === 404) {
@@ -91,13 +98,19 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
     getCategories();
   }, []);
 
-  console.log(categories);
+  console.log(categories.length);
 
   return (
-    <SafeAreaView className="bg-[#ffe3d8] flex-1 relative">
+    <SafeAreaView className="bg-[#ffe3d8] flex-1">
       <ScrollView
         scrollEnabled={true}
-        contentContainerStyle={{ paddingBottom: 20 }}
+        contentContainerStyle={
+          categories.length > 3
+            ? { paddingBottom: 20 }
+            : addCategoryMode
+            ? { height: "100%" }
+            : { height: "100%" }
+        }
       >
         <CategoriesBackground
           className="flex-1 justify-start h-full"
@@ -126,10 +139,10 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
             </TouchableOpacity>
           </View>
           <View className="w-full flex-row flex-wrap p-4 mb-4 py-4 justify-center">
-            {categories.length === 0 || noJournalsFound ? (
-              <View className="w-full items-center justify-center p-4 bg-[#ff60006b]">
-                <Text className="font-pbold text-base text-orange-600">
-                  No Entries for this Journal
+            {categories.length < 1 || noJournalsFound ? (
+              <View className="w-full items-center justify-center p-4 bg-[#ff60006b] mt-10">
+                <Text className="font-pbold text-base text-orange-600 text-center">
+                  No Journal found, Create a new Journal to get started
                 </Text>
               </View>
             ) : (
