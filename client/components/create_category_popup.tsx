@@ -11,6 +11,18 @@ type Props = {
   onClose: () => void;
 };
 
+interface User {
+  userId: string;
+  role: string;
+  profile: string;
+  fullname: string;
+  username: string;
+  password: string;
+  salt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 const CreateCategoryPopup: React.FC<Props> = ({ onClose }) => {
   const [category, setCategory] = useState({
     categoryName: "",
@@ -19,6 +31,30 @@ const CreateCategoryPopup: React.FC<Props> = ({ onClose }) => {
   const [success, setSuccess] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const { authState } = useAuth();
+  const [user, setUser] = useState({});
+  const getSignedInUser = async () => {
+    const token = authState?.token;
+    const baseUrl = BASEURL;
+
+    try {
+      const getSignedInUserRequest = await axios.post(
+        `${baseUrl}/users/get_user`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (getSignedInUserRequest.status === 200) {
+        setUser(getSignedInUserRequest.data.user as User);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const createCategory = async () => {
     const token = authState?.token;
@@ -29,7 +65,7 @@ const CreateCategoryPopup: React.FC<Props> = ({ onClose }) => {
         `${baseUrl}/categories/create_category`,
         {
           categoryName: category.categoryName,
-          owner: "JeromeMugita",
+          owner: (user as User)?.username,
         },
         {
           headers: {
@@ -59,7 +95,9 @@ const CreateCategoryPopup: React.FC<Props> = ({ onClose }) => {
 
   return (
     <View className="w-full h-[100vh] bg-[#0000006b] absolute top-0 left-0 items-center justify-center">
-      {success ? <SuccessWidget message="Journal Created Successfully" /> : null}
+      {success ? (
+        <SuccessWidget message="Journal Created Successfully" />
+      ) : null}
       {error ? <ErrorWidget message="Something went wrong!" /> : null}
       <View className="bg-white p-4 w-[300px] rounded-xl">
         <FormField

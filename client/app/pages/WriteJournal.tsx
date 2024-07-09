@@ -1,5 +1,5 @@
 import { View, Text, Image, ScrollView, TouchableOpacity } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { images } from "@/constants";
 import { Ionicons } from "@expo/vector-icons";
 import FormField from "@/components/form_field";
@@ -26,6 +26,18 @@ type RootStackParamList = {
   };
 };
 
+interface User {
+  userId: string;
+  role: string;
+  profile: string;
+  fullname: string;
+  username: string;
+  password: string;
+  salt: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 type JournalsRouteProp = RouteProp<RootStackParamList, "Journals">;
 type JournalScreenProps = NativeStackScreenProps<RootStackParamList, "pages">;
 
@@ -43,6 +55,31 @@ const WriteJournal = ({ navigation }: JournalScreenProps) => {
   const [success, setSuccess] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
 
+  const [user, setUser] = useState({});
+  const getSignedInUser = async () => {
+    const token = authState?.token;
+    const baseUrl = BASEURL;
+
+    try {
+      const getSignedInUserRequest = await axios.post(
+        `${baseUrl}/users/get_user`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (getSignedInUserRequest.status === 200) {
+        setUser(getSignedInUserRequest.data.user as User);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const writeNewJournal = async () => {
     const token = authState?.token;
     const baseUrl = BASEURL;
@@ -52,7 +89,7 @@ const WriteJournal = ({ navigation }: JournalScreenProps) => {
         `${baseUrl}/journals/create_journal`,
         {
           title: writeJournal.title,
-          owner: "JeromeMugita",
+          owner: (user as User)?.username,
           content: writeJournal.content,
           category: categoryName,
         },
@@ -86,15 +123,17 @@ const WriteJournal = ({ navigation }: JournalScreenProps) => {
     }
   };
 
+  useEffect(() => {
+    getSignedInUser();
+  }, []);
+
   return (
     <ScrollView
       className="bg-[#ffe3d8] p-4"
       scrollEnabled={true}
       contentContainerStyle={{ paddingBottom: 20 }}
     >
-      {success ? (
-        <SuccessWidget message="Entry made Successfully" />
-      ) : null}
+      {success ? <SuccessWidget message="Entry made Successfully" /> : null}
       {error ? <ErrorWidget message="Something went wrong!" /> : null}
       <View className="w-full mb-4">
         <Text className="font-pbold text-xl text-red-950">

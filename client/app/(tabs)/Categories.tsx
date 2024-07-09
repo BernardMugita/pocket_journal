@@ -80,7 +80,7 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
         setCategories(getCategoriesRequest.data.categories);
       }
       if (getCategoriesRequest.status === 404) {
-        setNoJournalsFound(true)
+        setNoJournalsFound(true);
       }
     } catch (error) {
       console.error(error);
@@ -125,48 +125,6 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
               </Text>
             </TouchableOpacity>
           </View>
-          <View className="w-full p-4">
-            <Text className="font-psemibold text-base mb-2">
-              Filter Journals
-            </Text>
-          </View>
-          <View className="w-full flex-row mb-4 gap-2 p-4">
-            <View className="mb-2 flex-1">
-              <TouchableOpacity
-                className="p-3 bg-white flex-row items-center rounded-xl"
-                onPress={() => setOpen(true)}
-              >
-                <Ionicons name="calendar" size={20} />
-                <Text className="font-pregular text-base ml-2">
-                  Select date
-                </Text>
-              </TouchableOpacity>
-              <DatePicker
-                modal
-                open={open}
-                date={date}
-                onConfirm={(date) => {
-                  setOpen(false);
-                  setDate(date);
-                }}
-                onCancel={() => {
-                  setOpen(false);
-                }}
-              />
-            </View>
-
-            <View className="flex-1">
-              <TouchableOpacity
-                className="p-3 bg-white flex-row items-center rounded-xl"
-                onPress={() => setOpen(true)}
-              >
-                <Ionicons name="calendar" size={20} />
-                <Text className="font-pregular text-base ml-2">
-                  No of entries
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
           <View className="w-full flex-row flex-wrap p-4 mb-4 py-4 justify-center">
             {categories.length === 0 || noJournalsFound ? (
               <View className="w-full items-center justify-center p-4 bg-[#ff60006b]">
@@ -186,7 +144,7 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
           </View>
           {addCategoryMode && (
             <CreateCategoryPopup onClose={() => setAddCategoryMode(false)} />
-          )}          
+          )}
         </CategoriesBackground>
       </ScrollView>
     </SafeAreaView>

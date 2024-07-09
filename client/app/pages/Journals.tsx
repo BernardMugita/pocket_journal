@@ -62,6 +62,8 @@ const Journals = ({ navigation }: JournalScreenProps) => {
   const route = useRoute<JournalsRouteProp>();
   const { categoryName } = route.params as { categoryName: string };
   const [noJournalsFound, setNoJournalsFound] = useState<boolean>(false);
+  const timeRightNow = today.getHours();
+  const isDayTime = timeRightNow >= 6 && timeRightNow < 18;
 
   const getCategoryJournals = async () => {
     const token = authState?.token;
@@ -109,7 +111,7 @@ const Journals = ({ navigation }: JournalScreenProps) => {
         <View className="h-[300px] w-[100%]">
           <IntroBanner
             className="h-[300px] justify-end p-4"
-            source={images.day}
+            source={isDayTime ? images.day : images.night}
             resizeMode="cover"
             imageStyle={styles.bannerOpacity}
           >
@@ -157,7 +159,9 @@ const Journals = ({ navigation }: JournalScreenProps) => {
           </View>
         </View>
         <FloatingButton
-          handleNavigate={() => navigation.navigate("WriteJournal", { categoryName: categoryName })}
+          handleNavigate={() =>
+            navigation.navigate("WriteJournal", { categoryName: categoryName })
+          }
           name="Write"
         />
       </JournalsBackground>
