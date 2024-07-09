@@ -14,7 +14,8 @@ interface AuthProps {
   onRegister?: (
     fullname: string,
     username: string,
-    password: string
+    password: string,
+    email: string
   ) => Promise<any>;
   onLogin?: (username: string, password: string) => Promise<any>;
   onLogout?: () => Promise<any>;
@@ -69,7 +70,7 @@ export const AuthProvider = ({ children }: any) => {
           isExpired: isTokenExpired(token),
         });
 
-        console.log(isTokenExpired(token))
+        console.log(isTokenExpired(token));
       }
     };
 
@@ -79,13 +80,15 @@ export const AuthProvider = ({ children }: any) => {
   const RegisterUser = async (
     fullname: string,
     username: string,
-    password: string
+    password: string,
+    email: string
   ) => {
     try {
       return await axios.post(`${BASEURL}/auth/register_user`, {
         fullname,
         username,
         password,
+        email,
       });
     } catch (error) {
       return { error: true, message: (error as any).response.data.message };

@@ -103,7 +103,7 @@ const SignIn = (props: Props) => {
           <View className="justify-center items-center pt-5 flex-row gap-2 w-full">
             <Text className="font-pregular text-center text-lg">
               Dont have an account?{" "}
-              <Link href="sign_up" className="text-red-950 font-bold text-lg">
+              <Link href="SignUp" className="text-red-950 font-bold text-lg">
                 Sign Up
               </Link>
             </Text>

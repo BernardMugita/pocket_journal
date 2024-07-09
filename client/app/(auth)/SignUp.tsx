@@ -16,7 +16,7 @@ type Props = {};
 
 type RootStackParamList = {
   sing_up: undefined;
-  sign_in: undefined;
+  SignIn: undefined;
 };
 
 type SuccessfulRegisterRequest = {
@@ -34,6 +34,7 @@ const SignUp: React.FC<Props> = () => {
     fullname: "",
     username: "",
     password: "",
+    email: "",
   });
 
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -44,27 +45,20 @@ const SignUp: React.FC<Props> = () => {
   const { onRegister } = useAuth();
 
   const handleRegisterRequest = async () => {
-    console.log("Registering");
-    const baseUrl = process.env.BASEURL;
-    const new_user = {
-      fullname: form.fullname,
-      username: form.username,
-      password: form.password,
-    };
-
-    console.log("Requesting");
     try {
       const registerRequest = await onRegister!(
         form.fullname,
         form.username,
-        form.password
+        form.password,
+        form.email
       );
 
-      if (registerRequest.status == "success") {
+      // const response = JSON.parse(registerRequest.data)
+
+      if (registerRequest.data.status == "success") {
         setSuccess(true);
-        console.log(registerRequest.data);
         setTimeout(() => {
-          navigation.navigate("sign_in");
+          navigation.navigate("SignIn");
         }, 3000);
       } else {
         setError(true);
@@ -117,6 +111,16 @@ const SignUp: React.FC<Props> = () => {
             title="Username"
             value={form.username}
             handleChangeText={(e: string) => setForm({ ...form, username: e })}
+            otherStyles="mt-7"
+            placeholder=""
+            keyboardType=""
+            inputStyles="w-full h-16 px-4 bg-gray-200 rounded-xl flex-row items-center"
+          />
+
+          <FormField
+            title="Email"
+            value={form.email}
+            handleChangeText={(e: string) => setForm({ ...form, email: e })}
             otherStyles="mt-7"
             placeholder=""
             keyboardType=""
