@@ -2,13 +2,10 @@ import {
   View,
   Text,
   ScrollView,
-  Image,
   ImageBackground,
   StyleSheet,
 } from "react-native";
-import React, { useState } from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
-import { images } from "@/constants";
+import React, { useEffect, useState } from "react";
 import { styled } from "nativewind";
 import {
   useNavigation,
@@ -19,37 +16,84 @@ import {
 import FormField from "@/components/form_field";
 import JournalItem from "../../components/journal_item";
 import FloatingButton from "../../components/floating_button";
+import { BASEURL, useAuth } from "../context/AuthContext";
+import axios from "axios";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { images } from "@/constants";
 
 type RootStackParamList = {
   single_journal: undefined;
   edit_journal: undefined;
-  write_journal: undefined;
+  WriteJournal: { categoryName: string };
   Journals: { categoryName: string };
+  pages: {
+    screen: string;
+    params: { journalId: string };
+  };
 };
 
 type JournalsRouteProp = RouteProp<RootStackParamList, "Journals">;
+type JournalScreenProps = NativeStackScreenProps<RootStackParamList, "pages">;
 
 const JournalsBackground = styled(ImageBackground);
 const IntroBanner = styled(ImageBackground);
 
-type Props = {
-  
+type Props = {};
+
+interface Journals {
+  journalId: string;
+  title: string;
+  owner: string;
+  content: string;
+  category: string;
+  createdAt: string;
+  updatedAt: string;
 }
 
-const Journals: React.FC = ({}) => {
+const Journals = ({ navigation }: JournalScreenProps) => {
   const today = new Date(Date.now());
   const [search, setSearch] = useState({
     searchQuery: "",
   });
 
+  const [journals, setJournals] = useState<Journals[]>([]);
+  const { authState } = useAuth();
+
   const route = useRoute<JournalsRouteProp>();
   const { categoryName } = route.params as { categoryName: string };
+  const [noJournalsFound, setNoJournalsFound] = useState<boolean>(false);
 
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const getCategoryJournals = async () => {
+    const token = authState?.token;
+    const baseUrl = BASEURL;
 
-  const handlePress = () => {
-    // navigation.navigate("edit_journal");
+    try {
+      const getCategoryJournalsRequest = await axios.post(
+        `${baseUrl}/journals/get_journals_by_category`,
+        {
+          categoryName: categoryName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (getCategoryJournalsRequest.status === 200) {
+        setJournals(getCategoryJournalsRequest.data.journals);
+      }
+      if (getCategoryJournalsRequest.status === 404) {
+        setNoJournalsFound(true);
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  useEffect(() => {
+    getCategoryJournals();
+  }, []);
 
   return (
     <ScrollView
@@ -92,16 +136,30 @@ const Journals: React.FC = ({}) => {
         </View>
         <View className="p-4 w-full">
           <Text className="font-pbold text-base text-black mb-4">
-            Your journals
+            Journal Entries
           </Text>
-          <Text>{`Category: ${categoryName}`}</Text>
           <View className="flex-col">
-            <JournalItem onPress={handlePress} />
-            <JournalItem onPress={handlePress} />
-            <JournalItem onPress={handlePress} />
+            {journals.length === 0 || noJournalsFound ? (
+              <View className="w-full items-center justify-center p-4 bg-[#ff60006b]">
+                <Text className="font-pbold text-base text-orange-600">
+                  No Entries for this Journal
+                </Text>
+              </View>
+            ) : (
+              journals.map((journal) => (
+                <JournalItem
+                  journal={journal}
+                  navigation={navigation}
+                  key={journal.journalId}
+                />
+              ))
+            )}
           </View>
         </View>
-        <FloatingButton route="/write_journal" name="Write" />
+        <FloatingButton
+          handleNavigate={() => navigation.navigate("WriteJournal", { categoryName: categoryName })}
+          name="Write"
+        />
       </JournalsBackground>
     </ScrollView>
   );

@@ -6,10 +6,30 @@ import FormField from "@/components/form_field";
 import RNPickerSelect from "react-native-picker-select";
 import CustomButton from "@/components/custom_button";
 import { router } from "expo-router";
+import { RouteProp, useRoute } from "@react-navigation/native";
+import { BASEURL, useAuth } from "../context/AuthContext";
+import axios, { AxiosError } from "axios";
+import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import SuccessWidget from "@/components/success_widget";
+import ErrorWidget from "@/components/error_widget";
 
 type Props = {};
 
-const WriteJournal = (props: Props) => {
+type RootStackParamList = {
+  SingleJournal: { journalId: string };
+  EditJournal: undefined;
+  WriteJournal: { categoryName: string };
+  Journals: { categoryName: string };
+  pages: {
+    screen: string;
+    params: { journalId: string };
+  };
+};
+
+type JournalsRouteProp = RouteProp<RootStackParamList, "Journals">;
+type JournalScreenProps = NativeStackScreenProps<RootStackParamList, "pages">;
+
+const WriteJournal = ({ navigation }: JournalScreenProps) => {
   const [writeJournal, setWriteJournal] = useState({
     title: "",
     owner: "",
@@ -17,12 +37,65 @@ const WriteJournal = (props: Props) => {
     category: "",
   });
 
+  const route = useRoute<JournalsRouteProp>();
+  const { categoryName } = route.params as { categoryName: string };
+  const { authState } = useAuth();
+  const [success, setSuccess] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const writeNewJournal = async () => {
+    const token = authState?.token;
+    const baseUrl = BASEURL;
+
+    try {
+      const writeNewJournalRequest = await axios.post(
+        `${baseUrl}/journals/create_journal`,
+        {
+          title: writeJournal.title,
+          owner: "JeromeMugita",
+          content: writeJournal.content,
+          category: categoryName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (writeNewJournalRequest.status === 200) {
+        const journal = writeNewJournalRequest.data.journal;
+        console.log(journal);
+        setSuccess(true);
+        setTimeout(() => {
+          setSuccess(false);
+          navigation.navigate("pages", {
+            screen: "SingleJournal",
+            params: { journalId: journal.journalId },
+          });
+          // navigation.pop()
+        }, 3000);
+      }
+    } catch (error) {
+      console.error(error as AxiosError);
+      setError(true);
+      setTimeout(() => {
+        setError(false);
+      }, 3000);
+    }
+  };
+
   return (
     <ScrollView
       className="bg-[#ffe3d8] p-4"
       scrollEnabled={true}
       contentContainerStyle={{ paddingBottom: 20 }}
     >
+      {success ? (
+        <SuccessWidget message="Entry made Successfully" />
+      ) : null}
+      {error ? <ErrorWidget message="Something went wrong!" /> : null}
       <View className="w-full mb-4">
         <Text className="font-pbold text-xl text-red-950">
           New journal entry
@@ -65,7 +138,7 @@ const WriteJournal = (props: Props) => {
           placeholder="Share your thoughts . . ."
           keyboardType=""
         />
-        <FormField
+        {/* <FormField
           title="Category"
           value={writeJournal.category}
           handleChangeText={(e: string) =>
@@ -75,11 +148,13 @@ const WriteJournal = (props: Props) => {
           otherStyles="mt-5"
           placeholder="Select a category"
           keyboardType=""
-        />
+        /> */}
         <View className="my-4">
           <CustomButton
             title="Create"
-            handlePress={() => {}}
+            handlePress={() => {
+              writeNewJournal();
+            }}
             containerStyles="bg-red-950 rounded-xl justify-center items-center p-4 flex-1 text-center"
             textStyles="font-pregular text-white text-base"
           />

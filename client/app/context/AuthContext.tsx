@@ -131,7 +131,7 @@ export const AuthProvider = ({ children }: any) => {
     });
 
     setTimeout(() => {
-      router.navigate("sign_in");
+      router.navigate("SignIn");
     }, 2000);
   };
 

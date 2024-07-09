@@ -10,9 +10,9 @@ import Journals from "./Journals";
 type Props = {};
 
 type RootStackParamList = {
-  single_journal: undefined;
-  edit_journal: undefined;
-  write_journal: undefined;
+  SingleJournal: undefined;
+  EditJournal: undefined;
+  WriteJournal: undefined;
   Journals: { categoryName: string };
 };
 
@@ -35,7 +35,7 @@ const PagesLayout = (props: Props) => {
   return (
     <Stack.Navigator>
       <Stack.Screen
-        name="single_journal"
+        name="SingleJournal"
         component={SingleJournal}
         options={{
           headerShown: true,
@@ -54,7 +54,7 @@ const PagesLayout = (props: Props) => {
       />
 
       <Stack.Screen
-        name="edit_journal"
+        name="EditJournal"
         component={EditJournal}
         options={{
           headerShown: true,
@@ -72,7 +72,7 @@ const PagesLayout = (props: Props) => {
         }}
       />
       <Stack.Screen
-        name="write_journal"
+        name="WriteJournal"
         component={WriteJournal}
         options={{
           headerShown: true,
@@ -93,7 +93,7 @@ const PagesLayout = (props: Props) => {
         name="Journals"
         component={Journals}
         options={({ route }) => ({
-          title: `Journals of ${route.params?.categoryName}`,
+          title: `${route.params?.categoryName.toUpperCase()} JOURNAL`,
           headerShown: true,
           headerStyle: {
             backgroundColor: "#ffe3d8",

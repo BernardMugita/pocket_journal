@@ -4,6 +4,7 @@ import {
   ScrollView,
   ImageBackground,
   StyleSheet,
+  Image,
 } from "react-native";
 import React, { useEffect } from "react";
 import FormField from "@/components/form_field";
@@ -11,7 +12,7 @@ import { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import CategoryItem from "@/components/category_item";
 import { styled } from "nativewind";
-import { images } from "@/constants";
+import { icons, images } from "@/constants";
 import FloatingButton from "@/components/floating_button";
 import DatePicker from "react-native-date-picker";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -57,6 +58,7 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
   const [open, setOpen] = useState(false);
 
   const [addCategoryMode, setAddCategoryMode] = useState(false);
+  const [noJournalsFound, setNoJournalsFound] = useState<boolean>(false);
 
   const getCategories = async () => {
     const token = authState?.token;
@@ -77,6 +79,9 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
       if (getCategoriesRequest.status === 200) {
         setCategories(getCategoriesRequest.data.categories);
       }
+      if (getCategoriesRequest.status === 404) {
+        setNoJournalsFound(true)
+      }
     } catch (error) {
       console.error(error);
     }
@@ -89,7 +94,7 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
   console.log(categories);
 
   return (
-    <SafeAreaView className="bg-[#ffe3d8] flex-1">
+    <SafeAreaView className="bg-[#ffe3d8] flex-1 relative">
       <ScrollView
         scrollEnabled={true}
         contentContainerStyle={{ paddingBottom: 20 }}
@@ -105,6 +110,20 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
               Here are your Journals, under each you'll find the corresponding
               entries
             </Text>
+          </View>
+          <View className="w-full px-6 items-end">
+            <TouchableOpacity
+              onPress={() => setAddCategoryMode(true)}
+              className="p-2 bg-red-950 rounded-xl flex-row items-center gap-2"
+            >
+              <Image
+                source={icons.bookmark}
+                className="w-[16px] h-[16px]"
+              ></Image>
+              <Text className="text-base font-pregular text-white">
+                New Journal
+              </Text>
+            </TouchableOpacity>
           </View>
           <View className="w-full p-4">
             <Text className="font-psemibold text-base mb-2">
@@ -149,16 +168,25 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
             </View>
           </View>
           <View className="w-full flex-row flex-wrap p-4 mb-4 py-4 justify-center">
-            {categories.map((category, key) => (
-              <CategoryItem
-                navigation={navigation}
-                category={category as CategoryResponse}
-                key={key}
-              />
-            ))}
+            {categories.length === 0 || noJournalsFound ? (
+              <View className="w-full items-center justify-center p-4 bg-[#ff60006b]">
+                <Text className="font-pbold text-base text-orange-600">
+                  No Entries for this Journal
+                </Text>
+              </View>
+            ) : (
+              categories.map((category, key) => (
+                <CategoryItem
+                  navigation={navigation}
+                  category={category as CategoryResponse}
+                  key={key}
+                />
+              ))
+            )}
           </View>
-          {addCategoryMode && <CreateCategoryPopup />}
-          {/* <FloatingButton route="/" name="New"/> */}
+          {addCategoryMode && (
+            <CreateCategoryPopup onClose={() => setAddCategoryMode(false)} />
+          )}          
         </CategoriesBackground>
       </ScrollView>
     </SafeAreaView>

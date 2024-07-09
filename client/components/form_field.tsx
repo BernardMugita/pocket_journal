@@ -59,7 +59,13 @@ const FormField: React.FC<Props> = ({
             onChangeText={handleChangeText}
             secureTextEntry={title === "Password" && !showPassword}
             multiline={title === "Content"}
-            numberOfLines={15}
+            numberOfLines={
+              title === "Content" && value.length > 500
+                ? 150
+                : value.length > 100
+                ? 300
+                : 15
+            }
           />
         )}
 
