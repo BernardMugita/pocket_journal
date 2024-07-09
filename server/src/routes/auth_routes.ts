@@ -6,14 +6,13 @@ import authenticateToken from "../funcs/authenticateJWT";
 const router: Router = Router();
 const User = db.Users;
 const JWT = require("jsonwebtoken");
-const nodemailer = require("nodemailer");
 
 // user interface
 interface UserObject {
   fullname: string;
   username: string;
-  password: string;
   email: string;
+  password: string;
   salt: string;
   userId: string;
   role: string;
@@ -41,7 +40,7 @@ const generateSalt = (): string => {
 router.post("/register_user", async (req: Request, res: Response) => {
   const { fullname, username, password, email } = req.body;
 
-  if (!fullname || !username || !password) {
+  if (!fullname || !username || !password || !email) {
     return res.status(400).json({
       status: "error",
       message: "All fields are required",
@@ -156,68 +155,28 @@ router.post("/sign_in_user", async (req: Request, res: Response) => {
   }
 });
 
-// Configure nodemailer transporter
-const transporter = nodemailer.createTransport({
-  service: "gmail", // You can use any email service
-  auth: {
-    user: "your-email@gmail.com", // Replace with your email
-    pass: "your-email-password", // Replace with your email password
-  },
-});
+router.post(
+  "/change_password",
+  authenticateToken,
+  async (req: AuthenticatedRequest, res: Response) => {
+    const newPassword = req.body.newPassword;
+    const userId = req.signUser?.userId;
 
-router.post("/change_password", authenticateToken, async (req, res) => {
-  const { email, otp, newPassword } = req.body;
-
-  if (!email) {
-    return res.status(400).json({
-      status: "error",
-      message: "Email is required",
-    });
-  }
-
-  try {
-    const user = await User.findOne({ where: { email: email } });
-    if (!user) {
-      return res.status(404).json({
+    if (!newPassword) {
+      return res.status(400).json({
         status: "error",
-        message: "User not found!",
+        message: "New password is required",
       });
     }
 
-    if (!otp && !newPassword) {
-      // Step 3: Generate OTP
-      const otp = crypto.randomBytes(3).toString("hex"); // Generate a 6-digit OTP
-      const otpSalt = generateSalt();
-      const hashedOtp = await hashPassword(otp, otpSalt);
-
-      // Step 4: Send OTP via email
-      const mailOptions = {
-        from: "your-email@gmail.com", // Replace with your email
-        to: email,
-        subject: "Your OTP for Password Change",
-        text: `Your OTP is ${otp}`,
-      };
-
-      transporter.sendMail(mailOptions, async (error: Error) => {
-        if (error) {
-          return res.status(500).json({
-            status: "error",
-            message: "Error sending email:",
-          });
-        } else {
-          user.password = hashedOtp;
-          user.salt = otpSalt;
-          await user.save();
-          return res.status(200).json({
-            status: "success",
-            message: "OTP sent to email",
-          });
-        }
-      });
-    } else if (otp && newPassword) {
-      // Step 5: Compare OTP and change password
-      const hashedOtp = await hashPassword(otp, user.salt);
-      if (hashedOtp === user.password) {
+    try {
+      const user = await User.findOne({ where: { userId: userId } });
+      if (!user) {
+        return res.status(404).json({
+          status: "error",
+          message: "User not found!",
+        });
+      } else {
         const newSalt = generateSalt();
         const hashedNewPassword = await hashPassword(newPassword, newSalt);
 
@@ -229,24 +188,14 @@ router.post("/change_password", authenticateToken, async (req, res) => {
           status: "success",
           message: "Password updated successfully",
         });
-      } else {
-        return res.status(400).json({
-          status: "error",
-          message: "Invalid OTP",
-        });
       }
-    } else {
-      return res.status(400).json({
+    } catch (error) {
+      return res.status(500).json({
         status: "error",
-        message: "Invalid request",
+        message: "Something went wrong:",
       });
     }
-  } catch (error) {
-    return res.status(500).json({
-      status: "error",
-      message: "Something went wrong:",
-    });
   }
-});
+);
 
 module.exports = router;
