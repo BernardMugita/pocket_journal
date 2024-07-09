@@ -111,7 +111,7 @@ router.post(
         const categories = await CategoryModel.findAll({
           where: { owner: user.username },
         });
-        if (categories.length == 0) {
+        if (categories.length === 0) {
           res.status(404).json({
             status: "error",
             message: "User does not have categories",

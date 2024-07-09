@@ -7,6 +7,7 @@ interface UserAttributes {
   role?: string;
   profile?: string;
   fullname: string;
+  email: string;
   username: string;
   password: string;
   salt: string;
@@ -25,6 +26,7 @@ class User
   public profile!: string;
   public fullname!: string;
   public username!: string;
+  public email!: string;
   public password!: string;
   public salt!: string;
   public readonly createdAt!: Date;
@@ -54,6 +56,10 @@ const userModel = (sequelize: Sequelize) => {
         allowNull: false,
       },
       username: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      email: {
         type: DataTypes.STRING,
         allowNull: false,
       },
