@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image } from "react-native";
+import { View, Text, ScrollView, Image, ImageBackground } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SuccessWidget from "@/components/success_widget";
@@ -10,6 +10,7 @@ import { RouteProp, useRoute } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { BASEURL, useAuth } from "../context/AuthContext";
 import axios, { AxiosError } from "axios";
+import { styled } from "nativewind";
 
 type Props = {};
 
@@ -38,6 +39,8 @@ type AccountScreenProps = NativeStackScreenProps<
   RootStackParamList,
   "userview"
 >;
+
+const AccountsBackground = styled(ImageBackground);
 
 const EditAccount = ({ navigation }: AccountScreenProps) => {
   const [success, setSuccess] = useState(false);
@@ -89,7 +92,10 @@ const EditAccount = ({ navigation }: AccountScreenProps) => {
   return (
     <SafeAreaView className="bg-[#ffe3d8] flex-1 relative">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
-        <View className="w-full justify-center items-start h-full px-6 py-6 relative">
+        <AccountsBackground 
+        className="w-full justify-center items-start h-full px-6 py-6 relative"
+        source={images.bg}
+        >
           {success && <SuccessWidget message="Account updated Successful" />}
           {error && <ErrorWidget message="Something went wrong!" />}
           <Text className="font-pregular text-3xl">
@@ -122,7 +128,7 @@ const EditAccount = ({ navigation }: AccountScreenProps) => {
             isLoading={false}
             textStyles="text-center font-pregular text-2xl text-white"
           />
-        </View>
+        </AccountsBackground>
       </ScrollView>
     </SafeAreaView>
   );
