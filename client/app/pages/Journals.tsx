@@ -1,0 +1,122 @@
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  ImageBackground,
+  StyleSheet,
+} from "react-native";
+import React, { useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { images } from "@/constants";
+import { styled } from "nativewind";
+import {
+  useNavigation,
+  useRoute,
+  RouteProp,
+  NavigationProp,
+} from "@react-navigation/native";
+import FormField from "@/components/form_field";
+import JournalItem from "../../components/journal_item";
+import FloatingButton from "../../components/floating_button";
+
+type RootStackParamList = {
+  single_journal: undefined;
+  edit_journal: undefined;
+  write_journal: undefined;
+  Journals: { categoryName: string };
+};
+
+type JournalsRouteProp = RouteProp<RootStackParamList, "Journals">;
+
+const JournalsBackground = styled(ImageBackground);
+const IntroBanner = styled(ImageBackground);
+
+type Props = {
+  
+}
+
+const Journals: React.FC = ({}) => {
+  const today = new Date(Date.now());
+  const [search, setSearch] = useState({
+    searchQuery: "",
+  });
+
+  const route = useRoute<JournalsRouteProp>();
+  const { categoryName } = route.params as { categoryName: string };
+
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const handlePress = () => {
+    // navigation.navigate("edit_journal");
+  };
+
+  return (
+    <ScrollView
+      className="bg-[#ffe3d8]"
+      contentContainerStyle={{ height: "100%" }}
+    >
+      <JournalsBackground
+        className="flex-1 items-center justify-start opacity-250 relative"
+        source={images.bg}
+        resizeMode="contain"
+        imageStyle={styles.image}
+      >
+        <View className="h-[300px] w-[100%]">
+          <IntroBanner
+            className="h-[300px] justify-end p-4"
+            source={images.day}
+            resizeMode="cover"
+            imageStyle={styles.bannerOpacity}
+          >
+            <Text className="font-pblack text-white text-2xl">
+              Today is {today.toLocaleDateString().toString()}
+            </Text>
+            <Text className="font-pregular text-base text-white">
+              You have no new journal entries
+            </Text>
+          </IntroBanner>
+        </View>
+        <View className="px-4">
+          <FormField
+            title="Search"
+            value={search.searchQuery}
+            handleChangeText={(e: string) =>
+              setSearch({ ...search, searchQuery: e })
+            }
+            inputStyles="w-full h-16 px-4 border-2 border-red-950 rounded-xl flex-row items-center bg-red-200"
+            otherStyles="mt-5 w-full"
+            placeholder="Search journals . . ."
+            keyboardType=""
+          />
+        </View>
+        <View className="p-4 w-full">
+          <Text className="font-pbold text-base text-black mb-4">
+            Your journals
+          </Text>
+          <Text>{`Category: ${categoryName}`}</Text>
+          <View className="flex-col">
+            <JournalItem onPress={handlePress} />
+            <JournalItem onPress={handlePress} />
+            <JournalItem onPress={handlePress} />
+          </View>
+        </View>
+        <FloatingButton route="/write_journal" name="Write" />
+      </JournalsBackground>
+    </ScrollView>
+  );
+};
+
+const styles = StyleSheet.create({
+  shadow: {
+    elevation: 100,
+  },
+  image: {
+    opacity: 0.25,
+  },
+  bannerOpacity: {
+    opacity: 0.85,
+  },
+});
+
+export default Journals;

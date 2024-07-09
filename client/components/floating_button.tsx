@@ -11,7 +11,7 @@ type Props = {
 
 const FloatingButton: React.FC<Props> = ({ route, name }) => {
   return (
-    <View className="absolute items-center flex-col bottom-2 right-2">
+    <View className="absolute items-center flex-col top-3 right-4">
       <Link href={`${route}`} className="bg-[#450a0a] rounded-full">
         <Ionicons
           name="pencil-outline"

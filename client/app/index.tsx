@@ -42,7 +42,7 @@ const WelcomeScreen = (props: Props) => {
           </Text>
           <CustomButton
             title="Get started"
-            handlePress={() => router.push("/sign_in")}
+            handlePress={() => router.push("/SignIn")}
             containerStyles="bg-white rounded-xl min-h-[62px] justify-center items-center p-6 mt-7 w-full text-center"
             textStyles="font-pbold text-red-950 text-2xl"
           />

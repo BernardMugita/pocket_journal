@@ -33,7 +33,7 @@ const SignIn = (props: Props) => {
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);
-          router.replace("homepage");
+          router.replace("Homepage");
         }, 3000);
       } else {
         setError(true);

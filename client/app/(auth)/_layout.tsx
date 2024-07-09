@@ -8,22 +8,22 @@ type Props = {};
 const AuthLayout = (props: Props) => {
   const { authState } = useAuth();
 
-  console.log( authState?.isExpired)
+  // console.log( authState?.isExpired)
 
-  if (authState?.isAuthenticated )
-    return <Redirect href="/homepage" />;
+  if (authState?.isAuthenticated && !authState.isExpired)
+    return <Redirect href="Homepage" />;
 
   return (
     <>
       <Stack>
         <Stack.Screen
-          name="sign_up"
+          name="SignUp"
           options={{
             headerShown: false,
           }}
         />
         <Stack.Screen
-          name="sign_in"
+          name="SignIn"
           options={{
             headerShown: false,
           }}

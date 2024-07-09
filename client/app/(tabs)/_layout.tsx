@@ -6,14 +6,21 @@ import {
   ImageRequireSource,
 } from "react-native";
 import React from "react";
-import { Tabs } from "expo-router";
+import { Redirect } from "expo-router";
 
 import { icons } from "../../constants";
 import { Ionicons } from "@expo/vector-icons";
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from "react-native";
 import { useAuth } from "../context/AuthContext";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { NavigationContainer } from "@react-navigation/native";
+import HomePage from "./Homepage";
+import Categories from "./Categories";
+import Profile from "./Profile";
 
 type Props = {};
+
+const Tabs = createBottomTabNavigator();
 
 interface TabIconProps {
   icon: ImageURISource | ImageRequireSource;
@@ -23,6 +30,10 @@ interface TabIconProps {
 }
 
 const TabIcon: React.FC<TabIconProps> = ({ icon, color, name, focused }) => {
+  const { authState } = useAuth();
+
+  if (!authState?.isAuthenticated && authState?.isExpired)
+    return <Redirect href="/sign_in" />;
 
   return (
     <View className="items-center justify-center gap-2">
@@ -43,10 +54,10 @@ const TabIcon: React.FC<TabIconProps> = ({ icon, color, name, focused }) => {
 };
 
 const TabLayout = (props: Props) => {
-  const {onLogout} = useAuth()
+  const { onLogout } = useAuth();
 
   return (
-    <Tabs
+    <Tabs.Navigator
       screenOptions={{
         headerShown: false,
         tabBarShowLabel: false,
@@ -60,20 +71,21 @@ const TabLayout = (props: Props) => {
       }}
     >
       <Tabs.Screen
-        name="homepage"
+        name="Homepage"
+        component={HomePage}
         options={{
           title: "",
           headerShown: true,
-            headerStyle: {
-              backgroundColor: "#ffe3d8",
-            },
-            headerRight: () => (
-              <View className="px-4">
-                <TouchableOpacity onPress={onLogout}>
-                <Ionicons name="log-out-outline" size={30} color={'#450a0a'}/>
-                </TouchableOpacity>
-              </View>
-            ),
+          headerStyle: {
+            backgroundColor: "#ffe3d8",
+          },
+          headerRight: () => (
+            <View className="px-4">
+              <TouchableOpacity onPress={onLogout}>
+                <Ionicons name="log-out-outline" size={30} color={"#450a0a"} />
+              </TouchableOpacity>
+            </View>
+          ),
           tabBarIcon: ({ color, focused }) => (
             <TabIcon
               icon={icons.home}
@@ -85,8 +97,9 @@ const TabLayout = (props: Props) => {
         }}
       />
       <Tabs.Screen
-        name="categories"
-        options={{
+        name="Categories"
+        component={Categories}
+        options={(route) => ({
           title: "Journals",
           tabBarIcon: ({ color, focused }) => (
             <TabIcon
@@ -96,10 +109,11 @@ const TabLayout = (props: Props) => {
               focused={focused}
             />
           ),
-        }}
+        })}
       />
       <Tabs.Screen
-        name="profile"
+        name="Profile"
+        component={Profile}
         options={{
           title: "Profile",
           tabBarIcon: ({ color, focused }) => (
@@ -112,7 +126,7 @@ const TabLayout = (props: Props) => {
           ),
         }}
       />
-    </Tabs>
+    </Tabs.Navigator>
   );
 };
 

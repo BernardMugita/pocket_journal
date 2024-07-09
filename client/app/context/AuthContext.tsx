@@ -3,7 +3,7 @@ import axios from "axios";
 import * as SecureStore from "expo-secure-store";
 import { router } from "expo-router";
 
-const jwtDecode = require("jwt-decode");
+const { jwtDecode } = require("jwt-decode");
 
 interface AuthProps {
   authState?: {
@@ -48,8 +48,10 @@ export const AuthProvider = ({ children }: any) => {
     try {
       const decoded: DecodedToken = jwtDecode(token);
       const currentTime = Date.now() / 1000;
+      // console.log(decoded.exp);
       return decoded.exp < currentTime;
     } catch (error) {
+      // console.log(error);
       return true;
     }
   };
@@ -66,6 +68,8 @@ export const AuthProvider = ({ children }: any) => {
           isAuthenticated: true,
           isExpired: isTokenExpired(token),
         });
+
+        console.log(isTokenExpired(token))
       }
     };
 
@@ -127,8 +131,8 @@ export const AuthProvider = ({ children }: any) => {
     });
 
     setTimeout(() => {
-      router.navigate('sign_in')
-    }, 2000)
+      router.navigate("sign_in");
+    }, 2000);
   };
 
   const value = {

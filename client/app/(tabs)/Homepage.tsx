@@ -18,7 +18,7 @@ type Props = {};
 
 const HomeBackground = styled(ImageBackground);
 
-const HomePage = (props: Props) => {
+const Homepage = (props: Props) => {
   return (
     
       <ScrollView className="bg-[#ffe3d8]" contentContainerStyle={{ height: "100%" }}>
@@ -136,4 +136,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomePage;
+export default Homepage;

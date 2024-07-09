@@ -34,7 +34,7 @@ const FormField: React.FC<Props> = ({
   const [showPassword, setShowPassword] = useState(false);
   const [category, setCategory] = useState("");
   return (
-    <View className={`${otherStyles} w-full`}>
+    <View className={`${otherStyles}`}>
       <Text className="font-psemibold text-xl mb-2">{title}</Text>
 
       <View className={`${inputStyles}`}>
