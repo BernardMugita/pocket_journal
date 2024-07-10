@@ -12,7 +12,7 @@ const FloatingButton: React.FC<Props> = ({ handleNavigate, name }) => {
   return (
     <TouchableOpacity
       onPress={handleNavigate}
-      className="absolute items-center flex-col top-[-520] right-[-190]"
+      className="items-center flex-col"
     >
       <View className="bg-[#450a0a] rounded-full">
         <Ionicons name="pencil-outline" size={60} color="#fff" className="" />

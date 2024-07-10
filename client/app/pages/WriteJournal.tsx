@@ -91,7 +91,7 @@ const WriteJournal = ({ navigation }: JournalScreenProps) => {
           title: writeJournal.title,
           owner: (user as User)?.username,
           content: writeJournal.content,
-          category: categoryName,
+          category: categoryName ? categoryName : writeJournal.category,
         },
         {
           headers: {
@@ -127,6 +127,8 @@ const WriteJournal = ({ navigation }: JournalScreenProps) => {
     getSignedInUser();
   }, []);
 
+  console.log(categoryName);
+
   return (
     <ScrollView
       className="bg-[#ffe3d8] p-4"
@@ -139,20 +141,6 @@ const WriteJournal = ({ navigation }: JournalScreenProps) => {
         <Text className="font-pbold text-xl text-red-950">
           New journal entry
         </Text>
-      </View>
-      <View className="w-full h-[300px] rounded-xl mb-4">
-        <Image
-          className="h-full w-full rounded-xl"
-          source={images.placeholder}
-        ></Image>
-      </View>
-      <View className="w-full items-center justify-center">
-        <TouchableOpacity className="bg-[#450a0a] p-3 rounded-xl flex-row items-center w-[150px] justify-center">
-          <Text className="text-base font-pregular text-[#fff] mr-2">
-            Upload Image
-          </Text>
-          <Ionicons name="image" />
-        </TouchableOpacity>
       </View>
       <View>
         <FormField
@@ -172,22 +160,36 @@ const WriteJournal = ({ navigation }: JournalScreenProps) => {
           handleChangeText={(e: string) =>
             setWriteJournal({ ...writeJournal, content: e })
           }
-          inputStyles="w-full h-16 px-4 border-b-2 border-gray-300 rounded-xl flex-row items-center bg-transparent"
+          inputStyles="w-full px-4 border-b-2 border-gray-300 rounded-xl flex-row items-center bg-transparent"
           otherStyles="mt-5"
           placeholder="Share your thoughts . . ."
           keyboardType=""
         />
-        {/* <FormField
-          title="Category"
-          value={writeJournal.category}
-          handleChangeText={(e: string) =>
-            setWriteJournal({ ...writeJournal, category: e })
-          }
-          inputStyles="w-full h-16 px-4 border-2 border-gray-300 rounded-xl flex-row items-center bg-transparent"
-          otherStyles="mt-5"
-          placeholder="Select a category"
-          keyboardType=""
-        /> */}
+        {categoryName !== undefined ? (
+          <FormField
+            title="Category"
+            value={writeJournal.category ? writeJournal.category : categoryName}
+            handleChangeText={(e: string) =>
+              setWriteJournal({ ...writeJournal, category: e })
+            }
+            inputStyles="w-full h-16 flex-row items-center bg-transparent"
+            otherStyles="mt-5"
+            placeholder="Select a category"
+            keyboardType=""
+          />
+        ) : (
+          <FormField
+            title="New Category"
+            value={writeJournal.category}
+            handleChangeText={(e: string) =>
+              setWriteJournal({ ...writeJournal, category: e })
+            }
+            inputStyles="w-full h-16 h-16 px-4 border-b-2 border-gray-300 rounded-xl flex-row items-center bg-transparent"
+            otherStyles="mt-5"
+            placeholder="Add new Category"
+            keyboardType=""
+          />
+        )}
         <View className="my-4">
           <CustomButton
             title="Create"

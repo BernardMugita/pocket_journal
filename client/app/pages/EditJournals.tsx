@@ -100,7 +100,7 @@ const EditJournal = ({ navigation }: JournalScreenProps) => {
     >
       {success ? <SuccessWidget message="Journal Edited Successfully" /> : null}
       {error ? <ErrorWidget message="Something went wrong!" /> : null}
-      <View className="w-full h-[300px] rounded-xl mb-4">
+      {/* <View className="w-full h-[300px] rounded-xl mb-4">
         <Image
           className="h-full w-full rounded-xl"
           source={images.placeholder}
@@ -113,7 +113,7 @@ const EditJournal = ({ navigation }: JournalScreenProps) => {
           </Text>
           <Ionicons name="image" />
         </TouchableOpacity>
-      </View>
+      </View> */}
       <View>
         <FormField
           title="Title"
@@ -132,7 +132,7 @@ const EditJournal = ({ navigation }: JournalScreenProps) => {
           handleChangeText={(e: string) =>
             setWriteJournal({ ...writeJournal, content: e })
           }
-          inputStyles="w-full h-16 px-4 border-b-2 border-gray-300 rounded-xl flex-row items-center bg-transparent"
+          inputStyles="w-full px-4 border-b-2 border-gray-300 rounded-xl flex-row items-center bg-transparent"
           otherStyles="mt-5"
           placeholder="Share your thoughts . . ."
           keyboardType=""
@@ -143,7 +143,7 @@ const EditJournal = ({ navigation }: JournalScreenProps) => {
           handleChangeText={(e: string) =>
             setWriteJournal({ ...writeJournal, category: e })
           }
-          inputStyles="w-full h-16 px-4 border-2 border-gray-300 rounded-xl flex-row items-center bg-transparent"
+          inputStyles="w-full h-16 flex-row items-center bg-transparent"
           otherStyles="mt-5"
           placeholder="Select a category"
           keyboardType=""

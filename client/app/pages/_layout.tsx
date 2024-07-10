@@ -93,7 +93,9 @@ const PagesLayout = (props: Props) => {
         name="Journals"
         component={Journals}
         options={({ route }) => ({
-          title: `${route.params?.categoryName.toUpperCase()} JOURNAL`,
+          title: route.params?.categoryName
+            ? `${route.params?.categoryName.toUpperCase()} JOURNAL`
+            : "Your Journals",
           headerShown: true,
           headerStyle: {
             backgroundColor: "#ffe3d8",

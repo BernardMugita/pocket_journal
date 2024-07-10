@@ -71,10 +71,14 @@ const Journals = ({ navigation }: JournalScreenProps) => {
 
     try {
       const getCategoryJournalsRequest = await axios.post(
-        `${baseUrl}/journals/get_journals_by_category`,
-        {
-          categoryName: categoryName,
-        },
+        categoryName
+          ? `${baseUrl}/journals/get_journals_by_category`
+          : `${baseUrl}/journals/get_user_journals`,
+        categoryName
+          ? {
+              categoryName: categoryName,
+            }
+          : {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -110,17 +114,29 @@ const Journals = ({ navigation }: JournalScreenProps) => {
       >
         <View className="h-[300px] w-[100%]">
           <IntroBanner
-            className="h-[300px] justify-end p-4"
+            className="h-[300px] justify-between p-4"
             source={isDayTime ? images.day : images.night}
             resizeMode="cover"
             imageStyle={styles.bannerOpacity}
           >
-            <Text className="font-pblack text-white text-2xl">
-              Today is {today.toLocaleDateString().toString()}
-            </Text>
-            <Text className="font-pregular text-base text-white">
-              You have no new journal entries
-            </Text>
+            <View className="w-full items-end">
+              <FloatingButton
+                handleNavigate={() =>
+                  navigation.navigate("WriteJournal", {
+                    categoryName: categoryName,
+                  })
+                }
+                name="Write"
+              />
+            </View>
+            <View className="items-start flex-col">
+              <Text className="font-pblack text-white text-2xl">
+                Today is {today.toLocaleDateString().toString()}
+              </Text>
+              <Text className="font-pregular text-base text-white">
+                You have no new journal entries
+              </Text>
+            </View>
           </IntroBanner>
         </View>
         <View className="px-4">
@@ -158,12 +174,6 @@ const Journals = ({ navigation }: JournalScreenProps) => {
             )}
           </View>
         </View>
-        <FloatingButton
-          handleNavigate={() =>
-            navigation.navigate("WriteJournal", { categoryName: categoryName })
-          }
-          name="Write"
-        />
       </JournalsBackground>
     </ScrollView>
   );

@@ -1,4 +1,11 @@
-import { View, Text, ScrollView, Image, ImageBackground } from "react-native";
+import {
+  View,
+  Text,
+  ScrollView,
+  Image,
+  ImageBackground,
+  StyleSheet,
+} from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SuccessWidget from "@/components/success_widget";
@@ -97,6 +104,7 @@ const EditAccount = ({ navigation }: AccountScreenProps) => {
         <AccountsBackground
           className="w-full justify-center items-start h-full px-6 py-6 relative"
           source={images.bg}
+          imageStyle={styles.image}
         >
           {success && <SuccessWidget message="Account updated Successful" />}
           {error && <ErrorWidget message="Something went wrong!" />}
@@ -135,5 +143,17 @@ const EditAccount = ({ navigation }: AccountScreenProps) => {
     </SafeAreaView>
   );
 };
+
+const styles = StyleSheet.create({
+  shadow: {
+    elevation: 100,
+  },
+  image: {
+    opacity: 0.25,
+  },
+  text: {
+    fontFamily: "Poppins-Bold",
+  },
+});
 
 export default EditAccount;
