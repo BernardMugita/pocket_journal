@@ -5,6 +5,7 @@ import { authenticateToken } from "../funcs/authenticateJWT";
 const router = Router();
 const JournalModel = db.Journals;
 const UserModel = db.Users;
+const CategoryModel = db.Categories;
 
 // Extend the Request interface to include the user property
 
@@ -30,36 +31,52 @@ interface AuthenticatedRequest extends Request {
   signUser?: User;
 }
 
-router.post("/create_journal", async (req: Request, res: Response) => {
-  const { title, owner, content, category } = req.body;
+router.post(
+  "/create_journal",
+  authenticateToken,
+  async (req: Request, res: Response) => {
+    const { title, owner, content, category } = req.body;
 
-  const journal_details = {
-    title,
-    owner,
-    content,
-    category,
-  };
+    const journal_details = {
+      title,
+      owner,
+      content,
+      category,
+    };
 
-  if (!title || !content || !category || !owner) {
-    return res.status(400).json({
-      status: "error",
-      message: "Fill in all the fields",
-    });
+    if (!title || !content || !category || !owner) {
+      return res.status(400).json({
+        status: "error",
+        message: "Fill in all the fields",
+      });
+    }
+
+    try {
+      const existingCategory = await CategoryModel.findOne({
+        where: { categoryName: category },
+      });
+
+      if (!existingCategory) {
+        const new_category = {
+          categoryName: category,
+          owner: owner,
+        };
+        await CategoryModel.create(new_category);
+      }
+
+      const newJournal = await JournalModel.create(journal_details);
+      return res.status(200).json({
+        status: "success",
+        journal: newJournal,
+      });
+    } catch (error) {
+      return res.status(500).json({
+        status: "error",
+        message: error,
+      });
+    }
   }
-
-  try {
-    const newJournal = await JournalModel.create(journal_details);
-    return res.status(200).json({
-      status: "success",
-      journal: newJournal,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      status: "error",
-      message: error,
-    });
-  }
-});
+);
 
 router.post(
   "/get_journal",

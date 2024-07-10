@@ -54,8 +54,46 @@ router.post(
         });
       }
 
-      // Get current month and year
+      // Get current date
       const now = new Date();
+
+      // Calculate the date ranges
+      const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+      const lastWeekDate = new Date(now.setDate(now.getDate() - 7));
+      const yesterdayDate = new Date(now.setDate(now.getDate() - 1));
+
+      // Filter journals for last month
+      const lastMonthJournals = (userJournals as Journal[]).filter(
+        (journal) => {
+          const journalDate = journal.createdAt;
+          return (
+            journalDate &&
+            journalDate.getMonth() === lastMonthDate.getMonth() &&
+            journalDate.getFullYear() === lastMonthDate.getFullYear()
+          );
+        }
+      );
+
+      // Filter journals for last week
+      const lastWeekJournals = (userJournals as Journal[]).filter((journal) => {
+        const journalDate = journal.createdAt;
+        return journalDate && journalDate > lastWeekDate;
+      });
+
+      // Filter journals for yesterday
+      const yesterdayJournals = (userJournals as Journal[]).filter(
+        (journal) => {
+          const journalDate = journal.createdAt;
+          return (
+            journalDate &&
+            journalDate.getDate() === yesterdayDate.getDate() &&
+            journalDate.getMonth() === yesterdayDate.getMonth() &&
+            journalDate.getFullYear() === yesterdayDate.getFullYear()
+          );
+        }
+      );
+
+      // Get current month and year
       const currentMonth = now.getMonth();
       const currentYear = now.getFullYear();
 
@@ -151,11 +189,15 @@ router.post(
       return res.status(200).json({
         status: "success",
         stats: {
+          total_user_journals: userJournals.length,
           most_popular_day: formattedDate,
           journal_count: journalCountsByDay[dayWithMostJournalUploadsNumber],
           most_popular_month: mostPopularMonth,
           most_popular_category: mostPopularCategory,
           unique_categories: uniqueCategories,
+          last_month_journals: lastMonthJournals.length,
+          last_week_journals: lastWeekJournals.length,
+          yesterday_journals: yesterdayJournals.length,
         },
       });
     } catch (error) {
