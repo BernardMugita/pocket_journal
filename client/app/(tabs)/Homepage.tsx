@@ -71,6 +71,8 @@ const Homepage = ({ navigation }: HomeScreenProps) => {
   const [user, setUser] = useState<User>();
   const [stats, setStats] = useState<Stats>();
   const { authState } = useAuth();
+  const [journals, setJournals] = useState<Journals>();
+  const [noJournalsFound, setNoJournalsFound] = useState<boolean>(false);
 
   const getSignedInUser = async () => {
     const token = authState?.token;
@@ -119,9 +121,6 @@ const Homepage = ({ navigation }: HomeScreenProps) => {
       console.error(error);
     }
   };
-
-  const [journals, setJournals] = useState<Journals>();
-  const [noJournalsFound, setNoJournalsFound] = useState<boolean>(false);
 
   const getUserJournals = async () => {
     const token = authState?.token;

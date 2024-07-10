@@ -77,8 +77,6 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
         }
       );
 
-      console.log(getCategoriesRequest.data);
-
       if (getCategoriesRequest.status === 200) {
         // setCategories((prev) => [
         //   ...prev,
@@ -97,8 +95,6 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
   useEffect(() => {
     getCategories();
   }, []);
-
-  console.log(categories.length);
 
   return (
     <SafeAreaView className="bg-[#ffe3d8] flex-1">
