@@ -28,6 +28,40 @@ const AuthLayout = (props: Props) => {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name="ChangePassword"
+          options={{
+            headerShown: true,
+            title: "",
+            headerStyle: {
+              backgroundColor: "#ffe3d8",
+            },
+            headerTintColor: "#450a0a",
+            headerTitleStyle: {
+              fontWeight: "bold",
+              fontFamily: "Poppins-Regular",
+              color: "#450a0a",
+            },
+            headerTitleAlign: "left",
+          }}
+        />
+        <Stack.Screen
+          name="RequestOTP"
+          options={{
+            headerShown: true,
+            title: "",
+            headerStyle: {
+              backgroundColor: "#ffe3d8",
+            },
+            headerTintColor: "#450a0a",
+            headerTitleStyle: {
+              fontWeight: "bold",
+              fontFamily: "Poppins-Regular",
+              color: "#450a0a",
+            },
+            headerTitleAlign: "left",
+          }}
+        />
       </Stack>
     </>
   );

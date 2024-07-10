@@ -54,7 +54,7 @@ const SignIn = (props: Props) => {
   };
 
   return (
-    <SafeAreaView className=" bg-white">
+    <SafeAreaView className=" bg-[#ffe3d8]">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
         <View className="w-full justify-center items-start h-full px-6 py-6 relative">
           {success && <SuccessWidget message="Login Successful" />}
@@ -78,20 +78,28 @@ const SignIn = (props: Props) => {
             value={form.username}
             handleChangeText={(e: string) => setForm({ ...form, username: e })}
             otherStyles="mt-7"
-            placeholder=""
+            placeholder="Enter username"
             keyboardType=""
-            inputStyles="w-full h-16 px-4 bg-gray-200 rounded-xl flex-row items-center"
+            inputStyles="w-full h-16 px-4 bg-transparent border-2 border-red-950 rounded-xl flex-row items-center"
           />
 
           <FormField
             title="Password"
             value={form.password}
             handleChangeText={(e: string) => setForm({ ...form, password: e })}
-            placeholder=""
+            placeholder="Enter password"
             otherStyles="mt-7"
             keyboardType="password"
-            inputStyles="w-full h-16 px-4 bg-gray-200 rounded-xl flex-row items-center"
+            inputStyles="w-full h-16 px-4 bg-transparent border-2 border-red-950 rounded-xl flex-row items-center"
           />
+          <View className="w-full items-end mt-4">
+            <Link
+              href={"ChangePassword"}
+              className="text-base font-pregular text-blue-600 underline"
+            >
+              Forgot password?
+            </Link>
+          </View>
 
           <CustomButton
             title="Sign In"

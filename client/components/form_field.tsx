@@ -32,6 +32,7 @@ const FormField: React.FC<Props> = ({
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setConfirmShowPassword] = useState(false);
   const [category, setCategory] = useState("");
   return (
     <View className={`${otherStyles}`}>
@@ -79,8 +80,20 @@ const FormField: React.FC<Props> = ({
           </TouchableOpacity>
         )}
 
+        {title === "Confirm Password" && (
+          <TouchableOpacity
+            onPress={() => setShowPassword(!showConfirmPassword)}
+          >
+            <Image
+              source={!showConfirmPassword ? icons.eye : icons.eyeHide}
+              className="w-6 h-6 "
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        )}
+
         {title === "Search" && (
-          <TouchableOpacity onPress={() => setShowPassword(!showPassword)}>
+          <TouchableOpacity onPress={() => {}}>
             <Image
               source={icons.search}
               className="w-6 h-6 "

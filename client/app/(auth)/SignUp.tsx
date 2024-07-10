@@ -78,7 +78,7 @@ const SignUp: React.FC<Props> = () => {
   };
 
   return (
-    <SafeAreaView className=" bg-white">
+    <SafeAreaView className=" bg-[#ffe3d8]">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
         <View className="w-full justify-center items-start h-full px-6 py-6">
           {success && <SuccessWidget message="Account Created!" />}
@@ -104,7 +104,7 @@ const SignUp: React.FC<Props> = () => {
             otherStyles="mt-7"
             placeholder=""
             keyboardType=""
-            inputStyles="w-full h-16 px-4 bg-gray-200 rounded-xl flex-row items-center"
+            inputStyles="w-full h-16 px-4 bg-transparent border-2 border-red-950 rounded-xl flex-row items-center"
           />
 
           <FormField
@@ -114,7 +114,7 @@ const SignUp: React.FC<Props> = () => {
             otherStyles="mt-7"
             placeholder=""
             keyboardType=""
-            inputStyles="w-full h-16 px-4 bg-gray-200 rounded-xl flex-row items-center"
+            inputStyles="w-full h-16 px-4 bg-transparent border-2 border-red-950 rounded-xl flex-row items-center"
           />
 
           <FormField
@@ -124,7 +124,7 @@ const SignUp: React.FC<Props> = () => {
             otherStyles="mt-7"
             placeholder=""
             keyboardType=""
-            inputStyles="w-full h-16 px-4 bg-gray-200 rounded-xl flex-row items-center"
+            inputStyles="w-full h-16 px-4 bg-transparent border-2 border-red-950 rounded-xl flex-row items-center"
           />
 
           <FormField
@@ -134,7 +134,7 @@ const SignUp: React.FC<Props> = () => {
             placeholder=""
             otherStyles="mt-7"
             keyboardType="password"
-            inputStyles="w-full h-16 px-4 bg-gray-200 rounded-xl flex-row items-center"
+            inputStyles="w-full h-16 px-4 bg-transparent border-2 border-red-950 rounded-xl flex-row items-center"
           />
 
           <CustomButton

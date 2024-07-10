@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, Image, ImageBackground } from "react-native";
+import { Text, ScrollView, ImageBackground, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
 import SuccessWidget from "@/components/success_widget";
@@ -8,9 +8,10 @@ import FormField from "@/components/form_field";
 import CustomButton from "@/components/custom_button";
 import { RouteProp, useRoute } from "@react-navigation/native";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { BASEURL, useAuth } from "../context/AuthContext";
+import { BASEURL } from "../context/AuthContext";
 import axios, { AxiosError } from "axios";
 import { styled } from "nativewind";
+import { useNavigation } from "expo-router";
 
 type Props = {};
 
@@ -28,7 +29,6 @@ interface User {
   profile: string;
   fullname: string;
   username: string;
-  email: string;
   password: string;
   salt: string;
   createdAt: string;
@@ -43,39 +43,30 @@ type AccountScreenProps = NativeStackScreenProps<
 
 const AccountsBackground = styled(ImageBackground);
 
-const EditAccount = ({ navigation }: AccountScreenProps) => {
+const RequestOTP = () => {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(false);
   const route = useRoute<AccountRouteProp>();
-  const { userDetails } = route.params as { userDetails: User };
-  const { authState } = useAuth();
+
+  const navigation = useNavigation();
 
   const [form, setForm] = useState({
-    fullname: userDetails.fullname,
-    username: userDetails.username,
-    email: userDetails.email,
+    email: "",
   });
 
-  const editAccountDetails = async () => {
-    const token = authState?.token;
+  const requestOTP = async () => {
     const baseUrl = BASEURL;
 
     try {
-      const editAccountRequest = await axios.post(
-        `${baseUrl}/users/edit_user_account`,
+      const getOTPRequest = await axios.post(
+        `${baseUrl}/auth/passwords/request_otp`,
         {
-          fullname: form.fullname,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+          email: form.email,
         }
       );
 
-      if (editAccountRequest.status === 200) {
-        console.log(editAccountRequest.data);
+      if (getOTPRequest.status === 200) {
+        console.log(getOTPRequest.data);
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);
@@ -97,35 +88,28 @@ const EditAccount = ({ navigation }: AccountScreenProps) => {
         <AccountsBackground
           className="w-full justify-center items-start h-full px-6 py-6 relative"
           source={images.bg}
+          imageStyle={styles.image}
         >
-          {success && <SuccessWidget message="Account updated Successful" />}
+          {success && <SuccessWidget message="Check your email" />}
           {error && <ErrorWidget message="Something went wrong!" />}
           <Text className="font-pregular text-3xl">
-            Edit your account details
+            Enter your email address below to receive an OTP to use for
+            resetting your password.
           </Text>
-          <FormField
-            title="Fullname"
-            value={form.fullname}
-            handleChangeText={(e: string) => setForm({ ...form, fullname: e })}
-            otherStyles="mt-7"
-            placeholder=""
-            keyboardType=""
-            inputStyles="w-full h-16 px-4 bg-transparent border-2 rounded-xl flex-row items-center"
-          />
 
           <FormField
             title="Email"
             value={form.email}
             handleChangeText={(e: string) => setForm({ ...form, email: e })}
-            placeholder=""
+            placeholder="Enter your email"
             otherStyles="mt-7"
-            keyboardType="password"
+            keyboardType="email"
             inputStyles="w-full h-16 px-4 bg-transparent border-2 rounded-xl flex-row items-center"
           />
 
           <CustomButton
-            title="Save Changes"
-            handlePress={editAccountDetails}
+            title="Get OTP"
+            handlePress={requestOTP}
             containerStyles="mt-10 bg-[#008800] p-6 w-full rounded-xl"
             isLoading={false}
             textStyles="text-center font-pregular text-2xl text-white"
@@ -136,4 +120,16 @@ const EditAccount = ({ navigation }: AccountScreenProps) => {
   );
 };
 
-export default EditAccount;
+const styles = StyleSheet.create({
+  shadow: {
+    elevation: 100,
+  },
+  image: {
+    opacity: 0.25,
+  },
+  text: {
+    fontFamily: "Poppins-Bold",
+  },
+});
+
+export default RequestOTP;

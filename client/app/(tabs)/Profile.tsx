@@ -36,6 +36,7 @@ interface User {
   profile: string;
   fullname: string;
   username: string;
+  email: string;
   password: string;
   salt: string;
   createdAt: string;
@@ -214,7 +215,9 @@ const Profile = ({ navigation }: AccountScreenProps) => {
           </View>
           <View className="w-full px-10 mt-5 flex-row justify-between">
             <Text className="text-base font-pbold">Email:</Text>
-            <Text className="text-base font-pregular">username</Text>
+            <Text className="text-base font-pregular">
+              {(user as User)?.email}
+            </Text>
           </View>
         </ProfileBackgorund>
       </ScrollView>
