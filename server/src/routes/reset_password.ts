@@ -114,7 +114,7 @@ router.post("/change_password", async (req: Request, res: Response) => {
       const isValidOTP = user.password === otp;
 
       if (!isValidOTP) {
-        return res.status(400).json({
+        return res.status(401).json({
           status: "error",
           message: "Invalid OTP",
         });

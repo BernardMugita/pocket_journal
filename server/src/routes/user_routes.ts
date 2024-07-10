@@ -105,9 +105,10 @@ router.post(
           message: "User not found!",
         });
       } else {
-        const { fullname } = req.body;
+        const { fullname, email } = req.body;
         const user_details = {
           fullname,
+          email,
         };
         const updatedUser = await UserModel.update(user_details, {
           where: { userId: user.userId },
