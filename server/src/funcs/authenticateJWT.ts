@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from "express";
+import crypto from "crypto";
 
 const JWT = require("jsonwebtoken");
 
@@ -15,11 +16,11 @@ interface AuthenticatedRequest extends Request {
   signUser?: User;
 }
 
-function authenticateToken(
+export const authenticateToken = (
   req: AuthenticatedRequest,
   res: Response,
   next: NextFunction
-) {
+) => {
   const authHeader = req.headers["authorization"];
   const token = authHeader && authHeader.split(" ")[1];
 
@@ -40,6 +41,21 @@ function authenticateToken(
       }
     }
   );
-}
+};
 
-export default authenticateToken;
+export const hashPassword = (
+  password: string, 
+  salt: string
+): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    crypto.pbkdf2(password, salt, 10000, 64, "sha256", (err, derivedKey) => {
+      if (err) reject(err);
+      resolve(derivedKey.toString("hex"));
+    });
+  });
+};
+
+// generate the salt
+export const generateSalt = (): string => {
+  return crypto.randomBytes(16).toString("hex");
+};

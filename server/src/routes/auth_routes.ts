@@ -1,7 +1,7 @@
 import { Request, Response, Router } from "express";
 import crypto from "crypto";
 import db from "../models/sequelize";
-import authenticateToken from "../funcs/authenticateJWT";
+import { authenticateToken, generateSalt, hashPassword } from "../funcs/authenticateJWT";
 
 const router: Router = Router();
 const User = db.Users;
@@ -10,7 +10,7 @@ const JWT = require("jsonwebtoken");
 // user interface
 interface UserObject {
   fullname: string;
-  username: string;
+  username: string; 
   email: string;
   password: string;
   salt: string;
@@ -21,21 +21,6 @@ interface UserObject {
 interface AuthenticatedRequest extends Request {
   signUser?: UserObject;
 }
-
-// function to hash password
-const hashPassword = (password: string, salt: string): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    crypto.pbkdf2(password, salt, 10000, 64, "sha256", (err, derivedKey) => {
-      if (err) reject(err);
-      resolve(derivedKey.toString("hex"));
-    });
-  });
-};
-
-// generate the salt
-const generateSalt = (): string => {
-  return crypto.randomBytes(16).toString("hex");
-};
 
 router.post("/register_user", async (req: Request, res: Response) => {
   const { fullname, username, password, email } = req.body;
@@ -154,48 +139,5 @@ router.post("/sign_in_user", async (req: Request, res: Response) => {
     });
   }
 });
-
-router.post(
-  "/change_password",
-  authenticateToken,
-  async (req: AuthenticatedRequest, res: Response) => {
-    const newPassword = req.body.newPassword;
-    const userId = req.signUser?.userId;
-
-    if (!newPassword) {
-      return res.status(400).json({
-        status: "error",
-        message: "New password is required",
-      });
-    }
-
-    try {
-      const user = await User.findOne({ where: { userId: userId } });
-      if (!user) {
-        return res.status(404).json({
-          status: "error",
-          message: "User not found!",
-        });
-      } else {
-        const newSalt = generateSalt();
-        const hashedNewPassword = await hashPassword(newPassword, newSalt);
-
-        user.password = hashedNewPassword;
-        user.salt = newSalt;
-        await user.save();
-
-        return res.status(200).json({
-          status: "success",
-          message: "Password updated successfully",
-        });
-      }
-    } catch (error) {
-      return res.status(500).json({
-        status: "error",
-        message: "Something went wrong:",
-      });
-    }
-  }
-);
 
 module.exports = router;

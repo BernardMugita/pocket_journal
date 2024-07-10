@@ -10,7 +10,8 @@ const port = process.env.PORT || 3000;
 const authRoutes = require("./routes/auth_routes");
 const userRoutes = require("./routes/user_routes");
 const journalRoutes = require("./routes/journal_routes");
-const categoryRoutes = require("./routes/category_routes")
+const categoryRoutes = require("./routes/category_routes");
+const resetPasswordRoutes = require("./routes/reset_password");
 
 dotenv.config();
 app.use(cors());
@@ -40,6 +41,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/journals", journalRoutes);
 app.use("/api/categories", categoryRoutes);
+app.use("/api/auth/passwords", resetPasswordRoutes);
 
 app.listen(port, () => {
   console.log(`[server]: Server is running at http://localhost:${port}`);

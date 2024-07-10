@@ -1,6 +1,6 @@
 import { Request, Response, Router } from "express";
 import db from "../models/sequelize";
-import authenticateToken from "../funcs/authenticateJWT";
+import { authenticateToken } from "../funcs/authenticateJWT";
 
 const router = Router();
 const CategoryModel = db.Categories;
