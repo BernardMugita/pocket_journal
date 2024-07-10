@@ -165,7 +165,7 @@ const Homepage = ({ navigation }: HomeScreenProps) => {
     getSignedInUser();
     getUserJournalsSummary();
     getUserJournals();
-  }, []);
+  }, [journals]);
 
   return (
     <ScrollView

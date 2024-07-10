@@ -162,7 +162,7 @@ const Journals = ({ navigation }: JournalScreenProps) => {
             {journals.length === 0 || noJournalsFound ? (
               <View className="w-full items-center justify-center p-4 bg-[#ff60006b]">
                 <Text className="font-pbold text-base text-orange-600">
-                  No Entries for this Journal
+                  You don't have journal yet.
                 </Text>
               </View>
             ) : (

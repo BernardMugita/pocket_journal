@@ -79,7 +79,7 @@ const SignUp: React.FC<Props> = () => {
 
   return (
     <SafeAreaView className=" bg-[#ffe3d8]">
-      <ScrollView contentContainerStyle={{ height: "100%" }}>
+      <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         <View className="w-full justify-center items-start h-full px-6 py-6">
           {success && <SuccessWidget message="Account Created!" />}
           {error && <ErrorWidget message={`Failed: ${message}`} />}
@@ -147,7 +147,7 @@ const SignUp: React.FC<Props> = () => {
           <View className="justify-center items-center pt-5 flex-row gap-2 w-full">
             <Text className="font-pregular text-center text-lg">
               Already have an account?{" "}
-              <Link href="sign_in" className="text-red-950 font-bold text-lg">
+              <Link href="SignIn" className="text-red-950 font-bold text-lg">
                 Sign In
               </Link>
             </Text>

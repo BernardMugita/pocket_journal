@@ -85,11 +85,7 @@ const RequestOTP = () => {
   return (
     <SafeAreaView className="bg-[#ffe3d8] flex-1 relative">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
-        <AccountsBackground
-          className="w-full justify-center items-start h-full px-6 py-6 relative"
-          source={images.bg}
-          imageStyle={styles.image}
-        >
+        <AccountsBackground className="w-full justify-center items-start h-full px-6 py-6 relative mt-10">
           {success && <SuccessWidget message="Check your email" />}
           {error && <ErrorWidget message="Something went wrong!" />}
           <Text className="font-pregular text-3xl">

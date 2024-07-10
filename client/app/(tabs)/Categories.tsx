@@ -94,7 +94,7 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
 
   useEffect(() => {
     getCategories();
-  }, []);
+  }, [categories]);
 
   return (
     <SafeAreaView className="bg-[#ffe3d8] flex-1">

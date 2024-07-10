@@ -114,8 +114,6 @@ const ChangePassword: React.FC<Props> = () => {
       <ScrollView contentContainerStyle={{ paddingBottom: 40 }}>
         <AccountsBackground
           className="w-full justify-center items-start h-full px-6 py-6"
-          source={images.bg}
-          imageStyle={styles.image}
         >
           {success && (
             <SuccessWidget message="Password Changed, redirecting shortly" />
