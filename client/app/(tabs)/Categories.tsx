@@ -59,7 +59,7 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
   const [open, setOpen] = useState(false);
 
   const [addCategoryMode, setAddCategoryMode] = useState(false);
-  const [noJournalsFound, setNoJournalsFound] = useState<boolean>(false);
+  const [noCategoriesFound, setNoCategoriesFound] = useState<boolean>(false);
 
   const getCategories = async () => {
     const token = authState?.token;
@@ -87,7 +87,7 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
         setCategories(getCategoriesRequest.data.categories);
       }
       if (getCategoriesRequest.status === 404) {
-        setNoJournalsFound(true);
+        setNoCategoriesFound(true);
       }
     } catch (error) {
       console.error(error);
@@ -118,9 +118,9 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
           imageStyle={styles.image}
         >
           <View className="w-full mb-4 p-4">
-            <Text className="font-pblack text-2xl">Journals</Text>
+            <Text className="font-pblack text-2xl">Categories</Text>
             <Text className="font-pregular text-base">
-              Here are your Journals, under each you'll find the corresponding
+              Here are your Categories, under each you'll find the corresponding
               entries
             </Text>
           </View>
@@ -134,12 +134,12 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
                 className="w-[16px] h-[16px]"
               ></Image>
               <Text className="text-base font-pregular text-white">
-                New Journal
+                New Category
               </Text>
             </TouchableOpacity>
           </View>
           <View className="w-full flex-row flex-wrap p-4 mb-4 py-4 justify-center">
-            {categories.length < 1 || noJournalsFound ? (
+            {categories.length < 1 || noCategoriesFound ? (
               <View className="w-full items-center justify-center p-4 bg-[#ff60006b] mt-10">
                 <Text className="font-pbold text-base text-orange-600 text-center">
                   No Journal found, Create a new Journal to get started

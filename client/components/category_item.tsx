@@ -51,13 +51,13 @@ const CategoryItem = ({ category, navigation }: Props) => {
       </View>
       <TouchableOpacity onPress={handlePress} className="p-4">
         <View className="flex-row justify-between items-center">
-          <Text className="font-pbold flex-1">Journal name</Text>
+          <Text className="font-pbold flex-1">Category name</Text>
           <Text className="font-pregular">{category.categoryName}</Text>
         </View>
-        <View className="flex-row justify-between items-center">
+        {/* <View className="flex-row justify-between items-center">
           <Text className="font-pbold flex-1">No of entries</Text>
           <Text className="font-pregular">5</Text>
-        </View>
+        </View> */}
         <View className="flex-row justify-between items-center">
           <Text className="font-pbold flex-1">Created At</Text>
           <Text className="font-pregular">{formattedDate}</Text>

@@ -100,12 +100,12 @@ const TabLayout = (props: Props) => {
         name="Categories"
         component={Categories}
         options={(route) => ({
-          title: "Journals",
+          title: "Categories",
           tabBarIcon: ({ color, focused }) => (
             <TabIcon
               icon={icons.bookmark}
               color={color}
-              name="Journals"
+              name="Categories"
               focused={focused}
             />
           ),

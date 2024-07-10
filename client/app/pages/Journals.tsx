@@ -104,7 +104,9 @@ const Journals = ({ navigation }: JournalScreenProps) => {
   return (
     <ScrollView
       className="bg-[#ffe3d8]"
-      contentContainerStyle={{ height: "100%" }}
+      contentContainerStyle={
+        journals.length < 3 ? { height: "100%" } : { paddingBottom: 40 }
+      }
     >
       <JournalsBackground
         className="flex-1 items-center justify-start opacity-250 relative"
