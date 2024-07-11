@@ -1,6 +1,7 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import { View, Text, Image, StyleSheet, ImageBackground } from "react-native";
 import React from "react";
 import { images } from "@/constants";
+import { styled } from "nativewind";
 
 type Props = {
   journal: Journals;
@@ -37,7 +38,6 @@ const RecentJournal: React.FC<Props> = ({ journal }) => {
         style={styles.shadow}
         className="
             shadow-black-200
-              p-4
               rounded-xl
               shadow-xl
               w-full
@@ -48,11 +48,13 @@ const RecentJournal: React.FC<Props> = ({ journal }) => {
       >
         <View className="flex-1 mb-4">
           <Image
-            resizeMode="cover"
-            className="h-full w-full"
             source={images.placeholder}
-          ></Image>
+            className="w-full h-full rounded-t-xl"
+          >
+
+          </Image>
         </View>
+        <View className="p-4">
         <View className="flex-row justify-between">
           <Text className="font-pbold text-base">Journal name: </Text>
           <Text className="font-pregular text-base">
@@ -76,6 +78,7 @@ const RecentJournal: React.FC<Props> = ({ journal }) => {
           <Text className="font-pregular text-base">
             {(journal as Journals)?.content.length} Words
           </Text>
+        </View>
         </View>
       </View>
     </View>

@@ -21,6 +21,8 @@ import CreateCategoryPopup from "@/components/create_category_popup";
 import { BASEURL, useAuth } from "../context/AuthContext";
 import axios from "axios";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
+import SuccessWidget from "@/components/success_widget";
+import ErrorWidget from "@/components/error_widget";
 
 type Props = {
   // navigation: any;
@@ -51,6 +53,9 @@ const CategoriesBackground = styled(ImageBackground);
 const Categories = ({ navigation }: CategoryScreenProps) => {
   const { authState } = useAuth();
   const [categories, setCategories] = useState<CategoryResponse[]>([]);
+  const [success, setSuccess] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
   const [updatedAt, setUpdatedAt] = useState({
     filter: "",
     category: "",
@@ -94,7 +99,7 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
 
   useEffect(() => {
     getCategories();
-  }, [categories]);
+  }, []);
 
   return (
     <SafeAreaView className="bg-[#ffe3d8] flex-1">
@@ -108,6 +113,8 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
             : { height: "100%" }
         }
       >
+        {success ? <SuccessWidget message="Success" /> : null}
+        {error ? <ErrorWidget message="Something went wrong!" /> : null}
         <CategoriesBackground
           className="flex-1 justify-start h-full"
           source={images.bg}
@@ -146,6 +153,12 @@ const Categories = ({ navigation }: CategoryScreenProps) => {
                 <CategoryItem
                   navigation={navigation}
                   category={category as CategoryResponse}
+                  success={success}
+                  setSuccess={setSuccess}
+                  error={error}
+                  setError={setError}
+                  categoryMode={addCategoryMode}
+                  setCatMode={setAddCategoryMode}
                   key={key}
                 />
               ))

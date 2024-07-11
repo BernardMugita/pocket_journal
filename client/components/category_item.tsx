@@ -1,17 +1,31 @@
-import React from "react";
-import { View, Text, Image, TouchableOpacity } from "react-native";
+import React, { Dispatch, SetStateAction, useState } from "react";
+import { View, Text, Image, TouchableOpacity, ImageBackground, Alert } from "react-native";
 import { images } from "@/constants";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { styled } from "nativewind";
+import { Ionicons } from "@expo/vector-icons";
+import { BASEURL, useAuth } from "@/app/context/AuthContext";
+import axios from "axios";
+import CreateCategoryPopup from "./create_category_popup";
 
 type Props = {
-  category: {
-    categoryName: string;
-    owner: string;
-    createdAt: string;
-    updateAt: string;
-  };
+  category: Category;
   navigation: NativeStackNavigationProp<RootStackParamList, "pages">;
+  error: boolean,
+  success: boolean,
+  categoryMode: boolean
+  setSuccess: Dispatch<SetStateAction<boolean>>,
+  setError: Dispatch<SetStateAction<boolean>>,
+  setCatMode: Dispatch<SetStateAction<boolean>>
 };
+
+interface Category {
+  categoryId: string
+  categoryName: string;
+  owner: string;
+  createdAt: string;
+  updateAt: string;
+}
 
 type RootStackParamList = {
   single_journal: undefined;
@@ -23,7 +37,10 @@ type RootStackParamList = {
   };
 };
 
-const CategoryItem = ({ category, navigation }: Props) => {
+const RecentJournalHeader = styled(ImageBackground)
+
+const CategoryItem = ({ category, error, success, categoryMode, navigation, setError, setSuccess, setCatMode }: Props) => {
+
   const formattedDate = new Date(category.createdAt).toLocaleDateString(
     "en-US",
     {
@@ -41,13 +58,68 @@ const CategoryItem = ({ category, navigation }: Props) => {
     });
   };
 
+  const deleteCategory  = async() => {
+    const { authState } = useAuth();
+    const token = authState?.token;
+    const baseUrl = BASEURL;
+
+    try {
+      const deleteCategoryRequest = await axios.post(
+        `${baseUrl}/categories/delete_category`,
+        {
+          categoryId: category.categoryId
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (deleteCategoryRequest.status === 200) {
+        setSuccess(true)
+        setTimeout(() => {
+          setSuccess(false)
+        }, 3000)
+        
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  const confirmDelete = () => {
+    console.log(category.categoryId)
+    Alert.alert("Warning", `Are you sure you want to delete ${category.categoryName} category?`, [
+      {
+        text: "Cancel",
+        onPress: () => {},
+      },
+      {
+        text: "Delete",
+        onPress: () => {
+          deleteCategory();
+        },
+      },
+    ]);
+  };
+
   return (
     <View className="bg-white w-full rounded-xl mb-2 mr-2">
       <View className="h-[100px]">
-        <Image
-          className="w-full h-full rounded-tr-xl rounded-tl-xl"
-          source={images.placeholder}
-        />
+      <RecentJournalHeader
+            source={images.placeholder}
+            className="w-full h-full items-end"
+          >
+            <View className="flex-row m-2">
+              <TouchableOpacity className="bg-[#0088006b] p-2 mr-1" onPress={() => setCatMode(true)}>
+                <Ionicons name="pencil-outline"/>
+              </TouchableOpacity>
+              <TouchableOpacity className="bg-[#ff00006b] p-2" onPress={confirmDelete}>
+                <Ionicons name="trash-bin-outline"/>
+              </TouchableOpacity>
+            </View>
+          </RecentJournalHeader>
       </View>
       <TouchableOpacity onPress={handlePress} className="p-4">
         <View className="flex-row justify-between items-center">
