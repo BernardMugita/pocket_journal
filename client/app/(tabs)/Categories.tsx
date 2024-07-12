@@ -6,7 +6,6 @@ import {
   ImageBackground,
   StyleSheet,
   Image,
-  SafeAreaView,
   TouchableOpacity,
 } from "react-native";
 import CategoryItem from "@/components/category_item";
@@ -18,6 +17,7 @@ import axios from "axios";
 import type { NativeStackScreenProps } from "@react-navigation/native-stack";
 import SuccessWidget from "@/components/success_widget";
 import ErrorWidget from "@/components/error_widget";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 interface CategoryResponse {
   categoryId: string;
