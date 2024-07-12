@@ -58,10 +58,12 @@ const Journals = ({ navigation }: JournalScreenProps) => {
 
   const [journals, setJournals] = useState<Journals[]>([]);
   const { authState } = useAuth();
-
+  const [noJournalsFound, setNoJournalsFound] = useState<boolean>(false);
+  const [searchMode, setSearchMode] = useState<boolean>(false);
+  
+  
   const route = useRoute<JournalsRouteProp>();
   const { categoryName } = route.params as { categoryName: string };
-  const [noJournalsFound, setNoJournalsFound] = useState<boolean>(false);
   const timeRightNow = today.getHours();
   const isDayTime = timeRightNow >= 6 && timeRightNow < 18;
   const [filteredJournals, setFilteredJournals] = useState(journals);
@@ -107,7 +109,10 @@ const Journals = ({ navigation }: JournalScreenProps) => {
 
   useEffect(() => {
     getCategoryJournals();
-  }, [journals]);
+    if (search.searchQuery == "") {
+      setSearchMode(false)
+    }
+  }, [journals, search.searchQuery]);
 
   return (
     <ScrollView
@@ -154,6 +159,7 @@ const Journals = ({ navigation }: JournalScreenProps) => {
             title="Search"
             value={search.searchQuery}
             handleChangeText={(e: string) => {
+              setSearchMode(true)
               setSearch({ ...search, searchQuery: e });
               searchForJournal(e);
             }}
@@ -176,13 +182,13 @@ const Journals = ({ navigation }: JournalScreenProps) => {
                   You don't have journal yet.
                 </Text>
               </View>
-            ) : filteredJournals.length === 0 ? (
+            ) : searchMode && filteredJournals.length === 0 ? (
               <View className="w-full items-center justify-center p-4 bg-[#ff60006b]">
                 <Text className="font-pbold text-base text-orange-600">
                   No results found for "{search.searchQuery}".
                 </Text>
               </View>
-            ) : filteredJournals.length > 0 ? (
+            ) : searchMode && filteredJournals.length > 0 ? (
               <>
                 {filteredJournals.map((journal, index) => (
                   <JournalItem
