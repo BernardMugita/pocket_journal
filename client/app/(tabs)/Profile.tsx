@@ -43,6 +43,18 @@ interface User {
   updatedAt: string;
 }
 
+interface Stats {
+  total_user_journals: number;
+  most_popular_day: string;
+  journal_count: number;
+  most_popular_month: string;
+  most_popular_category: string;
+  unique_categories: number;
+  last_month_journals: number;
+  last_week_journals: number;
+  yesterday_journals: number;
+}
+
 type AccountScreenProps = NativeStackScreenProps<
   RootStackParamList,
   "userview"
@@ -53,6 +65,7 @@ const Profile = ({ navigation }: AccountScreenProps) => {
   const [user, setUser] = useState({});
   const [success, setSuccess] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
+  const [stats, setStats] = useState<Stats>();
 
   const getSignedInUser = async () => {
     const token = authState?.token;
@@ -114,6 +127,7 @@ const Profile = ({ navigation }: AccountScreenProps) => {
 
   useEffect(() => {
     getSignedInUser();
+    getUserJournalsSummary()
   }, []);
 
   const handleNavigate = () => {
@@ -137,6 +151,30 @@ const Profile = ({ navigation }: AccountScreenProps) => {
       },
     ]);
   };
+
+  const getUserJournalsSummary = async () => {
+      const token = authState?.token;
+      const baseUrl = BASEURL;
+  
+      try {
+        const getUserJournalStatsRequest = await axios.post(
+          `${baseUrl}/summary/journal_summary`,
+          {},
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+  
+        if (getUserJournalStatsRequest.status === 200) {
+          setStats(getUserJournalStatsRequest.data.stats as Stats);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    };
 
   return (
     <SafeAreaView className="bg-[#ffe3d8] flex-1 relative">
@@ -185,15 +223,15 @@ const Profile = ({ navigation }: AccountScreenProps) => {
             </View>
             <View className="flex-row items-center mb-4">
               <View className="flex-col items-center gap-1 flex-1">
-                <Text className="text-2xl font-pbold text-red-950">5</Text>
+                <Text className="text-2xl font-pbold text-red-950">{stats?.journal_count ? stats?.journal_count : "0"}</Text>
                 <Text className="text-base font-pregular text-white">
                   Entries
                 </Text>
               </View>
               <View className="flex-col items-center gap-1 flex-1">
-                <Text className="text-2xl font-pbold text-red-950">12</Text>
+                <Text className="text-2xl font-pbold text-red-950">{stats?.unique_categories ? stats?.unique_categories : "0"}</Text>
                 <Text className="text-base font-pregular text-white">
-                  Accounts
+                  Categories
                 </Text>
               </View>
             </View>
