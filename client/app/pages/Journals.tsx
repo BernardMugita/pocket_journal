@@ -64,6 +64,7 @@ const Journals = ({ navigation }: JournalScreenProps) => {
   const [noJournalsFound, setNoJournalsFound] = useState<boolean>(false);
   const timeRightNow = today.getHours();
   const isDayTime = timeRightNow >= 6 && timeRightNow < 18;
+  const [filteredJournals, setFilteredJournals] = useState(journals);
 
   const getCategoryJournals = async () => {
     const token = authState?.token;
@@ -97,9 +98,16 @@ const Journals = ({ navigation }: JournalScreenProps) => {
     }
   };
 
+  const searchForJournal = (journalName: string) => {
+    const searchResults = journals.filter((journal) =>
+      journal.title.toLowerCase().includes(journalName.toLowerCase())
+    );
+    setFilteredJournals(searchResults);
+  };
+
   useEffect(() => {
     getCategoryJournals();
-  }, []);
+  }, [journals]);
 
   return (
     <ScrollView
@@ -145,9 +153,10 @@ const Journals = ({ navigation }: JournalScreenProps) => {
           <FormField
             title="Search"
             value={search.searchQuery}
-            handleChangeText={(e: string) =>
-              setSearch({ ...search, searchQuery: e })
-            }
+            handleChangeText={(e: string) => {
+              setSearch({ ...search, searchQuery: e });
+              searchForJournal(e);
+            }}
             inputStyles="w-full h-16 px-4 border-2 border-red-950 rounded-xl flex-row items-center bg-red-200"
             otherStyles="mt-5 w-full"
             placeholder="Search journals . . ."
@@ -159,12 +168,30 @@ const Journals = ({ navigation }: JournalScreenProps) => {
             Journal Entries
           </Text>
           <View className="flex-col">
-            {journals.length === 0 || noJournalsFound ? (
+            {journals.length === 0 ||
+            noJournalsFound 
+            ? (
               <View className="w-full items-center justify-center p-4 bg-[#ff60006b]">
                 <Text className="font-pbold text-base text-orange-600">
                   You don't have journal yet.
                 </Text>
               </View>
+            ) : filteredJournals.length === 0 ? (
+              <View className="w-full items-center justify-center p-4 bg-[#ff60006b]">
+                <Text className="font-pbold text-base text-orange-600">
+                  No results found for "{search.searchQuery}".
+                </Text>
+              </View>
+            ) : filteredJournals.length > 0 ? (
+              <>
+                {filteredJournals.map((journal, index) => (
+                  <JournalItem
+                    journal={journal}
+                    navigation={navigation}
+                    key={index}
+                  />
+                ))}
+              </>
             ) : (
               journals.map((journal) => (
                 <JournalItem
