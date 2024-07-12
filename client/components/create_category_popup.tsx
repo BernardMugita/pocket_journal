@@ -1,14 +1,15 @@
-import { View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
+import { View } from "react-native";
 import FormField from "./form_field";
 import CustomButton from "./custom_button";
-import { BASEURL, useAuth } from "@/app/context/AuthContext";
 import axios, { AxiosError } from "axios";
 import SuccessWidget from "./success_widget";
 import ErrorWidget from "./error_widget";
+import { BASEURL, useAuth } from "@/app/context/AuthContext";
 
 type Props = {
   onClose: () => void;
+  category?: Category | null;
 };
 
 interface User {
@@ -23,15 +24,21 @@ interface User {
   updatedAt: string;
 }
 
-const CreateCategoryPopup: React.FC<Props> = ({ onClose }) => {
-  const [category, setCategory] = useState({
-    categoryName: "",
-  });
+interface Category {
+  categoryId: string;
+  categoryName: string;
+  owner: string;
+  createdAt: string;
+  updateAt: string;
+}
 
+const CreateCategoryPopup: React.FC<Props> = ({ onClose, category }) => {
+  const [categoryName, setCategoryName] = useState(category?.categoryName || "");
   const [success, setSuccess] = useState<boolean>(false);
   const [error, setError] = useState<boolean>(false);
   const { authState } = useAuth();
-  const [user, setUser] = useState({});
+  const [user, setUser] = useState<User | null>(null);
+
   const getSignedInUser = async () => {
     const token = authState?.token;
     const baseUrl = BASEURL;
@@ -49,35 +56,31 @@ const CreateCategoryPopup: React.FC<Props> = ({ onClose }) => {
       );
 
       if (getSignedInUserRequest.status === 200) {
-        setUser(getSignedInUserRequest.data.user as User);
+        setUser(getSignedInUserRequest.data.user);
       }
     } catch (error) {
       console.error(error);
     }
   };
 
-  const createCategory = async () => {
+  const createOrUpdateCategory = async () => {
     const token = authState?.token;
     const baseUrl = BASEURL;
 
     try {
-      const createCategoryRequest = await axios.post(
-        `${baseUrl}/categories/create_category`,
-        {
-          categoryName: category.categoryName,
-          owner: (user as User)?.username,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const endpoint = category ? "edit_category" : "create_category";
+      const payload = category
+        ? { categoryId: category.categoryId, categoryName }
+        : { categoryName, owner: user?.username };
 
-      if (createCategoryRequest.status === 200) {
-        const category = createCategoryRequest.data.category;
-        console.log(category);
+      const request = await axios.post(`${baseUrl}/categories/${endpoint}`, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (request.status === 200) {
         setSuccess(true);
         setTimeout(() => {
           setSuccess(false);
@@ -99,36 +102,28 @@ const CreateCategoryPopup: React.FC<Props> = ({ onClose }) => {
 
   return (
     <View className="w-full h-[800px] bg-[#0000006b] z-50 absolute top-0 left-0 items-center justify-center">
-      {success ? (
-        <SuccessWidget message="Journal Created Successfully" />
-      ) : null}
+      {success ? <SuccessWidget message="Category Saved Successfully" /> : null}
       {error ? <ErrorWidget message="Something went wrong!" /> : null}
       <View className="bg-white p-4 w-[300px] rounded-xl">
         <FormField
-          title="Journal name"
-          value={category.categoryName}
-          handleChangeText={(e: string) =>
-            setCategory({ ...category, categoryName: e })
-          }
+          title="Category name"
+          value={categoryName}
+          handleChangeText={setCategoryName}
           inputStyles="w-full h-16 px-4 border-b-2 border-gray-300 rounded-xl flex-row items-center bg-transparent"
           otherStyles="mt-5 w-full"
-          placeholder="Journal name . . ."
+          placeholder="Category name . . ."
           keyboardType=""
         />
         <View className="my-4 flex-row">
           <CustomButton
             title="Cancel"
-            handlePress={() => {
-              onClose();
-            }}
+            handlePress={onClose}
             containerStyles="bg-[#fff] rounded-xl justify-center items-center p-4 flex-1 text-center"
             textStyles="font-pregular text-red-950 text-base"
           />
           <CustomButton
-            title="Save changes"
-            handlePress={() => {
-              createCategory();
-            }}
+            title={category ? "Save changes" : "Create Category"}
+            handlePress={createOrUpdateCategory}
             containerStyles="bg-[#008800] ml-2 rounded-xl justify-center items-center p-4 flex-1 text-center"
             textStyles="font-pregular text-white text-base"
           />
